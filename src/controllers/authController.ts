@@ -8,5 +8,11 @@ export async function signUp(req: Request, res: Response) {
 }
 
 export async function signIn(req: Request, res: Response) {
+    const token = await authService.signIn(req.body);
+
+    res.status(200).send(token);
+}
+
+export async function checkToken(req: Request, res: Response) {
     res.sendStatus(200);
 }
