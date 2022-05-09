@@ -18,7 +18,7 @@ authRouter.post(
     authController.signIn
 );
 
-authRouter.get(
+authRouter.post(
     "/token/validation",
     validateTokenMiddleware,
     authController.checkToken

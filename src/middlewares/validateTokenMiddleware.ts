@@ -31,7 +31,7 @@ function getTokenData(token: string) {
 }
 
 async function getUser(tokenData: jwt.JwtPayload) {
-    const user = await userRepository.findByEmail(tokenData?.data);
+    const user = await userRepository.findByEmail(tokenData?.data?.email);
 
     if (!user) {
         throw { type: "bad_request", message: "user not found" };

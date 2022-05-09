@@ -154,6 +154,26 @@ describe("POST /sign-in", () => {
     });
 });
 
+describe("GET /token/validation", () => {
+    beforeAll(connect);
+    beforeEach(truncate);
+    afterAll(disconnect);
+
+    it("should return 200 given a valid token", async () => {
+        const userData = await signInFactory.signIn();
+
+        const result = await supertest(app)
+            .post("/sign-in")
+            .send({ email: userData.email, password: userData.password });
+
+        const validation = await supertest(app)
+            .post("/token/validation")
+            .set("Authorization", `Bearer ${result.text}`);
+
+        expect(validation.status).toBe(200);
+    });
+});
+
 async function truncate() {
     await db.collection("users").deleteMany({});
 }
