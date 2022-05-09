@@ -1,4 +1,4 @@
-import db from "../database.js";
+import { db } from "../database.js";
 
 export async function findByEmail(email: string) {
     return await db.collection("users").findOne({ email });

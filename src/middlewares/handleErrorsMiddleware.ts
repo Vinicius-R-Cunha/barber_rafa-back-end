@@ -11,7 +11,7 @@ export default function handleErrorsMiddleware(
     res: Response,
     next: NextFunction
 ) {
-    console.log(error);
+    // console.log(error);
 
     if (isAppError(error)) {
         return res
