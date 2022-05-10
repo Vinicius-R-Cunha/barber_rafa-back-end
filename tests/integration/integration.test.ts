@@ -4,7 +4,7 @@ import { db, mongoClient } from "../../src/database.js";
 import * as signUpFactory from "../factories/signUpFactory.js";
 import * as signInFactory from "../factories/signInFactory.js";
 import * as categoryFactory from "../factories/categoryFactory.js";
-import * as servicesFactory from "../factories/servicesFactory.js";
+import * as serviceFactory from "../factories/serviceFactory.js";
 import jwt from "jsonwebtoken";
 
 describe("POST /sign-up", () => {
@@ -311,7 +311,7 @@ describe("DELETE /categories/categoryTitle", () => {
 
     it("should return 422 if category exists but is not empty", async () => {
         const { title } = await categoryFactory.insertCategory();
-        await servicesFactory.insertService(title);
+        await serviceFactory.insertService(title);
         const token = await signInFactory.generateValidToken();
 
         const result = await supertest(app)
@@ -395,7 +395,7 @@ describe("POST /services/categoryTitle", () => {
 
     it("should return 201 given a valid body and send to db", async () => {
         const { title } = await categoryFactory.insertCategory();
-        const body = servicesFactory.serviceBody();
+        const body = serviceFactory.serviceBody();
         const token = await signInFactory.generateValidToken();
 
         const categoryBefore = await db
@@ -419,7 +419,7 @@ describe("POST /services/categoryTitle", () => {
 
     it("should return 422 given body without name", async () => {
         const { title } = await categoryFactory.insertCategory();
-        const body = servicesFactory.serviceBody("name");
+        const body = serviceFactory.serviceBody("name");
         const token = await signInFactory.generateValidToken();
 
         const result = await supertest(app)
@@ -432,7 +432,7 @@ describe("POST /services/categoryTitle", () => {
 
     it("should return 422 given body without price", async () => {
         const { title } = await categoryFactory.insertCategory();
-        const body = servicesFactory.serviceBody("price");
+        const body = serviceFactory.serviceBody("price");
         const token = await signInFactory.generateValidToken();
 
         const result = await supertest(app)
@@ -445,7 +445,7 @@ describe("POST /services/categoryTitle", () => {
 
     it("should return 422 given body without duration", async () => {
         const { title } = await categoryFactory.insertCategory();
-        const body = servicesFactory.serviceBody("duration");
+        const body = serviceFactory.serviceBody("duration");
         const token = await signInFactory.generateValidToken();
 
         const result = await supertest(app)
@@ -458,7 +458,7 @@ describe("POST /services/categoryTitle", () => {
 
     it("should return 422 given body without description", async () => {
         const { title } = await categoryFactory.insertCategory();
-        const body = servicesFactory.serviceBody("description");
+        const body = serviceFactory.serviceBody("description");
         const token = await signInFactory.generateValidToken();
 
         const result = await supertest(app)
@@ -471,7 +471,7 @@ describe("POST /services/categoryTitle", () => {
 
     it("should return 404 given a non-existent category", async () => {
         const title = "some title";
-        const body = servicesFactory.serviceBody();
+        const body = serviceFactory.serviceBody();
         const token = await signInFactory.generateValidToken();
 
         const result = await supertest(app)
@@ -484,12 +484,93 @@ describe("POST /services/categoryTitle", () => {
 
     it("should return 409 given a existent service with that name", async () => {
         const { title } = await categoryFactory.insertCategory();
-        const body = await servicesFactory.insertService(title);
+        const body = await serviceFactory.insertService(title);
         const token = await signInFactory.generateValidToken();
 
         const result = await supertest(app)
             .post(`/services/${title}`)
             .send(body)
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(result.status).toBe(409);
+    });
+});
+
+describe("PUT /services/categoryTitle/serviceName", () => {
+    beforeAll(connect);
+    beforeEach(truncate);
+    afterAll(disconnect);
+
+    it("should return 200 and edit the selected service inside db", async () => {
+        const { title } = await categoryFactory.insertCategory();
+        const body = await serviceFactory.insertService(title);
+        const token = await signInFactory.generateValidToken();
+
+        const categoryBefore = await db
+            .collection("categories")
+            .findOne({ title });
+
+        const serviceBefore = categoryBefore.services[0];
+
+        const newBody = serviceFactory.serviceBody();
+        const result = await supertest(app)
+            .put(`/services/${title}/${body.name}`)
+            .send(newBody)
+            .set("Authorization", `Bearer ${token}`);
+
+        const categoryAfter = await db
+            .collection("categories")
+            .findOne({ title });
+
+        const serviceAfter = categoryAfter.services[0];
+
+        expect(result.status).toBe(200);
+        expect(serviceBefore._id).toStrictEqual(serviceAfter._id);
+        expect(serviceBefore.name).not.toStrictEqual(serviceAfter.name);
+        expect(serviceBefore.price).not.toStrictEqual(serviceAfter.price);
+        expect(serviceBefore.duration).not.toStrictEqual(serviceAfter.duration);
+        expect(serviceBefore.description).not.toStrictEqual(
+            serviceAfter.description
+        );
+    });
+
+    it("should return 404 given a category that does not exists", async () => {
+        const { title } = await categoryFactory.insertCategory();
+        const body = await serviceFactory.insertService(title);
+        const token = await signInFactory.generateValidToken();
+        const fakeTitle = "some category";
+
+        const result = await supertest(app)
+            .put(`/services/${fakeTitle}/${body.name}`)
+            .send(body)
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(result.status).toBe(404);
+    });
+
+    it("should return 404 given a service that does not exists", async () => {
+        const { title } = await categoryFactory.insertCategory();
+        const service = "some service";
+        const body = serviceFactory.serviceBody();
+        const token = await signInFactory.generateValidToken();
+
+        const result = await supertest(app)
+            .put(`/services/${title}/${service}`)
+            .send(body)
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(result.status).toBe(404);
+    });
+
+    it("should return 409 given a 'new' service name that already exists", async () => {
+        const { title } = await categoryFactory.insertCategory();
+        const body = await serviceFactory.insertService(title);
+        const token = await signInFactory.generateValidToken();
+
+        const newBody = await serviceFactory.insertService(title);
+        const result = await supertest(app)
+            .put(`/services/${title}/${body.name}`)
+            .send(newBody)
             .set("Authorization", `Bearer ${token}`);
 
         expect(result.status).toBe(409);
@@ -506,9 +587,9 @@ describe("DELETE /services/categoryTitle/serviceName", () => {
         const serviceQuantity = 3;
 
         for (let i = 0; i < serviceQuantity - 1; i++) {
-            await servicesFactory.insertService(title);
+            await serviceFactory.insertService(title);
         }
-        const body = await servicesFactory.insertService(title);
+        const body = await serviceFactory.insertService(title);
 
         const token = await signInFactory.generateValidToken();
 
@@ -532,7 +613,7 @@ describe("DELETE /services/categoryTitle/serviceName", () => {
 
     it("should return 404 given a non-existent category", async () => {
         const { title } = await categoryFactory.insertCategory();
-        const body = await servicesFactory.insertService(title);
+        const body = await serviceFactory.insertService(title);
         const token = await signInFactory.generateValidToken();
         const fakeTitle = "some title";
 
@@ -545,7 +626,7 @@ describe("DELETE /services/categoryTitle/serviceName", () => {
 
     it("should return 404 given a non-existent service", async () => {
         const { title } = await categoryFactory.insertCategory();
-        await servicesFactory.insertService(title);
+        await serviceFactory.insertService(title);
         const token = await signInFactory.generateValidToken();
         const fakeService = "some service";
 

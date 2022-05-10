@@ -9,7 +9,7 @@ export interface ServiceData {
 }
 
 export async function create(body: ServiceData, categoryTitle: string) {
-    if (await validateCategoryService(categoryTitle, body.name))
+    if (await serviceExists(categoryTitle, body.name))
         throw {
             type: "conflict",
             message: "there is a service with this name already",
@@ -18,11 +18,28 @@ export async function create(body: ServiceData, categoryTitle: string) {
     await serviceRepository.createNewService(body, categoryTitle);
 }
 
+export async function edit(
+    oldServiceName: string,
+    body: ServiceData,
+    categoryTitle: string
+) {
+    if (!(await serviceExists(categoryTitle, oldServiceName)))
+        throw { type: "not_found", message: "service not found" };
+
+    if (await serviceExists(categoryTitle, body.name))
+        throw {
+            type: "conflict",
+            message: "there is a service with this name already",
+        };
+
+    await serviceRepository.editService(oldServiceName, body, categoryTitle);
+}
+
 export async function deleteService(
     categoryTitle: string,
     serviceName: string
 ) {
-    if (!(await validateCategoryService(categoryTitle, serviceName)))
+    if (!(await serviceExists(categoryTitle, serviceName)))
         throw { type: "not_found", message: "service not found" };
 
     await serviceRepository.deleteService(categoryTitle, serviceName);
@@ -36,10 +53,7 @@ async function validateCategory(categoryTitle: string) {
     return category;
 }
 
-async function validateCategoryService(
-    categoryTitle: string,
-    serviceName: string
-) {
+async function serviceExists(categoryTitle: string, serviceName: string) {
     const category = await validateCategory(categoryTitle);
 
     let serviceExists = false;

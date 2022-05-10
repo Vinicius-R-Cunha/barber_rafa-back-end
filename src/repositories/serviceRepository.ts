@@ -13,6 +13,27 @@ export async function createNewService(body: ServiceData, title: string) {
     );
 }
 
+export async function editService(
+    oldServiceName: string,
+    body: ServiceData,
+    title: string
+) {
+    return await db.collection("categories").updateOne(
+        {
+            title,
+            "services.name": oldServiceName,
+        },
+        {
+            $set: {
+                "services.$.name": body.name,
+                "services.$.price": body.price,
+                "services.$.duration": body.duration,
+                "services.$.description": body.description,
+            },
+        }
+    );
+}
+
 export async function deleteService(title: string, name: string) {
     return await db.collection("categories").updateOne(
         {

@@ -9,6 +9,14 @@ export async function create(req: Request, res: Response) {
     res.sendStatus(201);
 }
 
+export async function edit(req: Request, res: Response) {
+    const { categoryTitle, serviceName } = req.params;
+
+    await serviceService.edit(serviceName, req.body, categoryTitle);
+
+    res.sendStatus(200);
+}
+
 export async function deleteService(req: Request, res: Response) {
     const { categoryTitle, serviceName } = req.params;
 

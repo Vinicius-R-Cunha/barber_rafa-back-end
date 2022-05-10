@@ -13,6 +13,13 @@ serviceRouter.post(
     serviceController.create
 );
 
+serviceRouter.put(
+    "/services/:categoryTitle/:serviceName",
+    validateSchemaMiddleware(serviceSchema),
+    validateTokenMiddleware,
+    serviceController.edit
+);
+
 serviceRouter.delete(
     "/services/:categoryTitle/:serviceName",
     validateTokenMiddleware,
