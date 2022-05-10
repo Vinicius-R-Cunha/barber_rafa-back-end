@@ -1,4 +1,5 @@
 import * as categoryRepository from "../repositories/categoryRepository.js";
+import * as serviceRepository from "../repositories/serviceRepository.js";
 
 export interface ServiceData {
     name: string;
@@ -14,7 +15,7 @@ export async function create(body: ServiceData, categoryTitle: string) {
             message: "there is a service with this name already",
         };
 
-    await categoryRepository.createNewService(body, categoryTitle);
+    await serviceRepository.createNewService(body, categoryTitle);
 }
 
 export async function deleteService(
@@ -24,7 +25,7 @@ export async function deleteService(
     if (!(await validateCategoryService(categoryTitle, serviceName)))
         throw { type: "not_found", message: "service not found" };
 
-    await categoryRepository.deleteService(categoryTitle, serviceName);
+    await serviceRepository.deleteService(categoryTitle, serviceName);
 }
 
 async function validateCategory(categoryTitle: string) {
