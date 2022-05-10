@@ -1,7 +1,7 @@
 import Joi from "joi";
-import { ServiceData } from "../services/categoryService";
+import { CategoryData } from "../services/categoryService";
 
-const categorySchema = Joi.object<ServiceData>({
+const categorySchema = Joi.object<CategoryData>({
     title: Joi.string().required(),
 });
 
