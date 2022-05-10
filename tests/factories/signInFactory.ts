@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { db } from "../../src/database.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 type MissingDataSignIn = "email" | "password";
 
@@ -41,4 +42,20 @@ export async function signIn() {
         phone,
         password,
     };
+}
+
+export async function generateValidToken() {
+    const { name, email, phone } = await signIn();
+
+    const secretKey = process.env.JWT_SECRET;
+
+    return jwt.sign(
+        {
+            data: { name, email, phone },
+        },
+        secretKey,
+        {
+            expiresIn: 60 * 24 * 60 * 60,
+        }
+    );
 }

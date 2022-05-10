@@ -3,6 +3,7 @@ import app from "../../src/app.js";
 import { db, mongoClient } from "../../src/database.js";
 import * as signUpFactory from "../factories/signUpFactory.js";
 import * as signInFactory from "../factories/signInFactory.js";
+import * as categoryFactory from "../factories/categoryFactory.js";
 import jwt from "jsonwebtoken";
 
 describe("POST /sign-up", () => {
@@ -19,7 +20,9 @@ describe("POST /sign-up", () => {
             .findOne({ email: body.email });
 
         expect(result.status).toBe(201);
-        expect(user).toBeTruthy();
+        expect(user).toHaveProperty("name", body.name);
+        expect(user).toHaveProperty("email", body.email);
+        expect(user).toHaveProperty("phone", body.phone);
     });
 
     it("should return 422 given body missing name", async () => {
@@ -160,22 +163,100 @@ describe("GET /token/validation", () => {
     afterAll(disconnect);
 
     it("should return 200 given a valid token", async () => {
-        const userData = await signInFactory.signIn();
-
-        const result = await supertest(app)
-            .post("/sign-in")
-            .send({ email: userData.email, password: userData.password });
+        const token = await signInFactory.generateValidToken();
 
         const validation = await supertest(app)
             .post("/token/validation")
-            .set("Authorization", `Bearer ${result.text}`);
+            .set("Authorization", `Bearer ${token}`);
 
         expect(validation.status).toBe(200);
+    });
+
+    it("should return 401 given a invalid token", async () => {
+        const token = "completelyinvalidtoken";
+
+        const validation = await supertest(app)
+            .post("/token/validation")
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(validation.status).toBe(401);
+    });
+});
+
+describe("POST /categories", () => {
+    beforeAll(connect);
+    beforeEach(truncate);
+    afterAll(disconnect);
+
+    it("should return 201 given a valid body and send to db", async () => {
+        const body = categoryFactory.categoryBody();
+        const token = await signInFactory.generateValidToken();
+
+        const result = await supertest(app)
+            .post("/categories")
+            .send(body)
+            .set("Authorization", `Bearer ${token}`);
+
+        const category = await db
+            .collection("categories")
+            .findOne({ title: body.title });
+
+        expect(result.status).toBe(201);
+        expect(category).toHaveProperty("title", body.title);
+        expect(category).toHaveProperty("services", []);
+    });
+
+    it("should return 422 given a invalid body", async () => {
+        const body = categoryFactory.categoryBody("title");
+        const token = await signInFactory.generateValidToken();
+
+        const result = await supertest(app)
+            .post("/categories")
+            .send(body)
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(result.status).toBe(422);
+    });
+
+    it("should return 409 given a already existent title", async () => {
+        const body = await categoryFactory.insertCategory();
+        const token = await signInFactory.generateValidToken();
+
+        const result = await supertest(app)
+            .post("/categories")
+            .send(body)
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(result.status).toBe(409);
+    });
+});
+
+describe("GET /categories", () => {
+    beforeAll(connect);
+    beforeEach(truncate);
+    afterAll(disconnect);
+
+    it("should return 200 and a array with all categories", async () => {
+        const categoryQuantity = 3;
+
+        for (let i = 0; i < categoryQuantity; i++) {
+            await categoryFactory.insertCategory();
+        }
+
+        const token = await signInFactory.generateValidToken();
+
+        const result = await supertest(app)
+            .get("/categories")
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(result.status).toBe(200);
+        expect(result.body).toHaveLength(categoryQuantity);
     });
 });
 
 async function truncate() {
     await db.collection("users").deleteMany({});
+    await db.collection("categories").deleteMany({});
 }
 
 async function connect() {
