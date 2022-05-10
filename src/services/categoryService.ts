@@ -5,9 +5,7 @@ export interface CategoryData {
 }
 
 export async function create(title: string) {
-    const category = await categoryRepository.getByTitle(title);
-
-    if (category) {
+    if (await categoryExists(title)) {
         throw {
             type: "conflict",
             message: "there is a category with this name already",
@@ -35,7 +33,7 @@ export async function deleteEmpty(title: string) {
 async function categoryIsEmpty(title: string) {
     const category = await categoryRepository.getByTitle(title);
 
-    if (!category) {
+    if (!(await categoryExists(title))) {
         throw {
             type: "not_found",
             message: "category not found",
@@ -43,4 +41,26 @@ async function categoryIsEmpty(title: string) {
     }
 
     return category?.services.length === 0;
+}
+
+export async function edit(oldTitle: string, newTitle: string) {
+    if (!(await categoryExists(oldTitle))) {
+        throw {
+            type: "not_found",
+            message: "category not found",
+        };
+    }
+
+    if (await categoryExists(newTitle)) {
+        throw {
+            type: "conflict",
+            message: "there is a category with this name already",
+        };
+    }
+
+    await categoryRepository.editTitle(oldTitle, newTitle);
+}
+
+async function categoryExists(title: string) {
+    return await categoryRepository.getByTitle(title);
 }

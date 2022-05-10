@@ -25,4 +25,11 @@ categoryRouter.delete(
     categoryController.deleteEmpty
 );
 
+categoryRouter.put(
+    "/categories/:categoryTitle",
+    validateSchemaMiddleware(categorySchema),
+    validateTokenMiddleware,
+    categoryController.edit
+);
+
 export default categoryRouter;

@@ -4,7 +4,7 @@
         "dev": "nodemon src/server.ts",
         "dev:test": "dotenv -e .env.test nodemon src/server.ts",
         "test": "NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test jest -i",
-        "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage"
+        "test:coverage": "NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test jest --coverage"
     },
     "dependencies": {
         "bcrypt": "^5.0.1",

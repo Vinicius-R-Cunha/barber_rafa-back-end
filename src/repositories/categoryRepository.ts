@@ -15,3 +15,14 @@ export async function getByTitle(title: string) {
 export async function remove(title: string) {
     return await db.collection("categories").deleteOne({ title });
 }
+
+export async function editTitle(oldTitle: string, newTitle: string) {
+    return await db.collection("categories").updateOne(
+        {
+            title: oldTitle,
+        },
+        {
+            $set: { title: newTitle },
+        }
+    );
+}

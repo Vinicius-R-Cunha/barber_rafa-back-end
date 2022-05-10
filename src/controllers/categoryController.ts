@@ -22,3 +22,12 @@ export async function deleteEmpty(req: Request, res: Response) {
 
     res.status(200).send(categories);
 }
+
+export async function edit(req: Request, res: Response) {
+    const { categoryTitle } = req.params;
+    const { title } = req.body;
+
+    const categories = await categoryService.edit(categoryTitle, title);
+
+    res.status(200).send(categories);
+}

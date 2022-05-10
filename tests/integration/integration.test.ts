@@ -322,6 +322,72 @@ describe("DELETE /categories/categoryTitle", () => {
     });
 });
 
+describe("PUT /categories/categoryTitle", () => {
+    beforeAll(connect);
+    beforeEach(truncate);
+    afterAll(disconnect);
+
+    it("should return 200 and edit the category inside the db", async () => {
+        const { title } = await categoryFactory.insertCategory();
+        const body = categoryFactory.categoryBody();
+        const token = await signInFactory.generateValidToken();
+
+        const categoryBefore = await db
+            .collection("categories")
+            .findOne({ title });
+
+        const result = await supertest(app)
+            .put(`/categories/${title}`)
+            .send(body)
+            .set("Authorization", `Bearer ${token}`);
+
+        const categoryAfter = await db
+            .collection("categories")
+            .findOne({ title: body.title });
+
+        expect(result.status).toBe(200);
+        expect(categoryBefore._id).toStrictEqual(categoryAfter._id);
+    });
+
+    it("should return 422 given a invalid body", async () => {
+        const { title } = await categoryFactory.insertCategory();
+        const body = categoryFactory.categoryBody("title");
+        const token = await signInFactory.generateValidToken();
+
+        const result = await supertest(app)
+            .put(`/categories/${title}`)
+            .send(body)
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(result.status).toBe(422);
+    });
+
+    it("should return 404 given a category that does not exists", async () => {
+        const title = "some category";
+        const body = categoryFactory.categoryBody();
+        const token = await signInFactory.generateValidToken();
+
+        const result = await supertest(app)
+            .put(`/categories/${title}`)
+            .send(body)
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(result.status).toBe(404);
+    });
+
+    it("should return 409 given a body with existent title", async () => {
+        const { title } = await categoryFactory.insertCategory();
+        const token = await signInFactory.generateValidToken();
+
+        const result = await supertest(app)
+            .put(`/categories/${title}`)
+            .send({ title })
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(result.status).toBe(409);
+    });
+});
+
 describe("POST /services/categoryTitle", () => {
     beforeAll(connect);
     beforeEach(truncate);
