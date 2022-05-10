@@ -8,9 +8,7 @@ export interface ServiceData {
 }
 
 export async function create(body: ServiceData, categoryTitle: string) {
-    await validateCategory(categoryTitle);
-
-    if (await serviceAlreadyExists(categoryTitle, body.name))
+    if (await validateCategoryService(categoryTitle, body.name))
         throw {
             type: "conflict",
             message: "there is a service with this name already",
@@ -23,7 +21,7 @@ export async function deleteService(
     categoryTitle: string,
     serviceName: string
 ) {
-    if (!(await serviceAlreadyExists(categoryTitle, serviceName)))
+    if (!(await validateCategoryService(categoryTitle, serviceName)))
         throw { type: "not_found", message: "service not found" };
 
     await categoryRepository.deleteService(categoryTitle, serviceName);
@@ -37,7 +35,7 @@ async function validateCategory(categoryTitle: string) {
     return category;
 }
 
-async function serviceAlreadyExists(
+async function validateCategoryService(
     categoryTitle: string,
     serviceName: string
 ) {
