@@ -272,6 +272,56 @@ describe("GET /categories", () => {
     });
 });
 
+describe("DELETE /categories/categoryTitle", () => {
+    beforeAll(connect);
+    beforeEach(truncate);
+    afterAll(disconnect);
+
+    it("should return 200 and delete the category from db", async () => {
+        const { title } = await categoryFactory.insertCategory();
+        const token = await signInFactory.generateValidToken();
+
+        const categoryBefore = await db
+            .collection("categories")
+            .findOne({ title });
+
+        const result = await supertest(app)
+            .delete(`/categories/${title}`)
+            .set("Authorization", `Bearer ${token}`);
+
+        const categoryAfter = await db
+            .collection("categories")
+            .findOne({ title });
+
+        expect(result.status).toBe(200);
+        expect(categoryBefore).toBeTruthy();
+        expect(categoryAfter).toBeNull();
+    });
+
+    it("should return 404 if category does not exists", async () => {
+        const title = "some category";
+        const token = await signInFactory.generateValidToken();
+
+        const result = await supertest(app)
+            .delete(`/categories/${title}`)
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(result.status).toBe(404);
+    });
+
+    it("should return 422 if category exists but is not empty", async () => {
+        const { title } = await categoryFactory.insertCategory();
+        await servicesFactory.insertService(title);
+        const token = await signInFactory.generateValidToken();
+
+        const result = await supertest(app)
+            .delete(`/categories/${title}`)
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(result.status).toBe(422);
+    });
+});
+
 describe("POST /services/categoryTitle", () => {
     beforeAll(connect);
     beforeEach(truncate);

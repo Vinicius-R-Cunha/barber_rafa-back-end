@@ -19,4 +19,10 @@ categoryRouter.get(
     categoryController.get
 );
 
+categoryRouter.delete(
+    "/categories/:categoryTitle",
+    validateTokenMiddleware,
+    categoryController.deleteEmpty
+);
+
 export default categoryRouter;

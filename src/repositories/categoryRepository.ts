@@ -11,3 +11,7 @@ export async function getAll() {
 export async function getByTitle(title: string) {
     return await db.collection("categories").findOne({ title });
 }
+
+export async function remove(title: string) {
+    return await db.collection("categories").deleteOne({ title });
+}

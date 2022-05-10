@@ -14,3 +14,11 @@ export async function get(req: Request, res: Response) {
 
     res.status(200).send(categories);
 }
+
+export async function deleteEmpty(req: Request, res: Response) {
+    const { categoryTitle } = req.params;
+
+    const categories = await categoryService.deleteEmpty(categoryTitle);
+
+    res.status(200).send(categories);
+}
