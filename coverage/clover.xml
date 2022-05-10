@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1652171161781" clover="3.2.0">
-  <project timestamp="1652171161781" name="All files">
-    <metrics statements="179" coveredstatements="169" conditionals="42" coveredconditionals="38" methods="45" coveredmethods="42" elements="266" coveredelements="249" complexity="0" loc="179" ncloc="179" packages="9" files="28" classes="28"/>
+<coverage generated="1652173077709" clover="3.2.0">
+  <project timestamp="1652173077710" name="All files">
+    <metrics statements="179" coveredstatements="178" conditionals="42" coveredconditionals="42" methods="45" coveredmethods="45" elements="266" coveredelements="265" complexity="0" loc="179" ncloc="179" packages="9" files="28" classes="28"/>
     <package name="src">
       <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <file name="app.ts" path="/home/vinicao/Desktop/projetos/barber_rafa/back-end/src/app.ts">
@@ -24,7 +24,7 @@
       </file>
     </package>
     <package name="src.controllers">
-      <metrics statements="16" coveredstatements="13" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="6"/>
+      <metrics statements="16" coveredstatements="16" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="7"/>
       <file name="authController.ts" path="/home/vinicao/Desktop/projetos/barber_rafa/back-end/src/controllers/authController.ts">
         <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
         <line num="5" count="3" type="stmt"/>
@@ -42,21 +42,21 @@
         <line num="15" count="1" type="stmt"/>
       </file>
       <file name="serviceController.ts" path="/home/vinicao/Desktop/projetos/barber_rafa/back-end/src/controllers/serviceController.ts">
-        <metrics statements="6" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
+        <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
         <line num="5" count="3" type="stmt"/>
         <line num="7" count="3" type="stmt"/>
         <line num="9" count="1" type="stmt"/>
-        <line num="13" count="0" type="stmt"/>
-        <line num="15" count="0" type="stmt"/>
-        <line num="17" count="0" type="stmt"/>
+        <line num="13" count="3" type="stmt"/>
+        <line num="15" count="3" type="stmt"/>
+        <line num="17" count="1" type="stmt"/>
       </file>
     </package>
     <package name="src.middlewares">
-      <metrics statements="23" coveredstatements="20" conditionals="5" coveredconditionals="3" methods="7" coveredmethods="7"/>
+      <metrics statements="23" coveredstatements="22" conditionals="5" coveredconditionals="5" methods="7" coveredmethods="7"/>
       <file name="handleErrorsMiddleware.ts" path="/home/vinicao/Desktop/projetos/barber_rafa/back-end/src/middlewares/handleErrorsMiddleware.ts">
         <metrics statements="3" coveredstatements="2" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
-        <line num="16" count="21" type="cond" truecount="1" falsecount="0"/>
-        <line num="17" count="21" type="stmt"/>
+        <line num="16" count="25" type="cond" truecount="1" falsecount="0"/>
+        <line num="17" count="25" type="stmt"/>
         <line num="22" count="0" type="stmt"/>
       </file>
       <file name="validateSchemaMiddleware.ts" path="/home/vinicao/Desktop/projetos/barber_rafa/back-end/src/middlewares/validateSchemaMiddleware.ts">
@@ -68,40 +68,40 @@
         <line num="11" count="12" type="stmt"/>
       </file>
       <file name="validateTokenMiddleware.ts" path="/home/vinicao/Desktop/projetos/barber_rafa/back-end/src/middlewares/validateTokenMiddleware.ts">
-        <metrics statements="15" coveredstatements="13" conditionals="3" coveredconditionals="1" methods="4" coveredmethods="4"/>
-        <line num="10" count="8" type="stmt"/>
-        <line num="12" count="8" type="cond" truecount="0" falsecount="1"/>
-        <line num="13" count="0" type="stmt"/>
-        <line num="16" count="8" type="stmt"/>
-        <line num="17" count="7" type="stmt"/>
-        <line num="19" count="7" type="stmt"/>
-        <line num="24" count="8" type="stmt"/>
-        <line num="25" count="8" type="cond" truecount="1" falsecount="0"/>
+        <metrics statements="15" coveredstatements="15" conditionals="3" coveredconditionals="3" methods="4" coveredmethods="4"/>
+        <line num="10" count="13" type="stmt"/>
+        <line num="12" count="13" type="cond" truecount="1" falsecount="0"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="16" count="12" type="stmt"/>
+        <line num="17" count="11" type="stmt"/>
+        <line num="19" count="10" type="stmt"/>
+        <line num="24" count="12" type="stmt"/>
+        <line num="25" count="12" type="cond" truecount="1" falsecount="0"/>
         <line num="26" count="1" type="stmt"/>
-        <line num="28" count="7" type="stmt"/>
-        <line num="30" count="7" type="stmt"/>
-        <line num="34" count="7" type="stmt"/>
-        <line num="36" count="7" type="cond" truecount="0" falsecount="1"/>
-        <line num="37" count="0" type="stmt"/>
-        <line num="40" count="7" type="stmt"/>
+        <line num="28" count="11" type="stmt"/>
+        <line num="30" count="11" type="stmt"/>
+        <line num="34" count="11" type="stmt"/>
+        <line num="36" count="11" type="cond" truecount="1" falsecount="0"/>
+        <line num="37" count="1" type="stmt"/>
+        <line num="40" count="10" type="stmt"/>
       </file>
     </package>
     <package name="src.repositories">
-      <metrics statements="8" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="6"/>
+      <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="7"/>
       <file name="categoryRepository.ts" path="/home/vinicao/Desktop/projetos/barber_rafa/back-end/src/repositories/categoryRepository.ts">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
         <line num="4" count="1" type="stmt"/>
         <line num="8" count="1" type="stmt"/>
-        <line num="12" count="5" type="stmt"/>
+        <line num="12" count="8" type="stmt"/>
       </file>
       <file name="serviceRepository.ts" path="/home/vinicao/Desktop/projetos/barber_rafa/back-end/src/repositories/serviceRepository.ts">
-        <metrics statements="2" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
         <line num="6" count="1" type="stmt"/>
-        <line num="17" count="0" type="stmt"/>
+        <line num="17" count="1" type="stmt"/>
       </file>
       <file name="userRepository.ts" path="/home/vinicao/Desktop/projetos/barber_rafa/back-end/src/repositories/userRepository.ts">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
-        <line num="4" count="13" type="stmt"/>
+        <line num="4" count="17" type="stmt"/>
         <line num="13" count="1" type="stmt"/>
         <line num="15" count="1" type="stmt"/>
       </file>
@@ -155,7 +155,7 @@
       </file>
     </package>
     <package name="src.services">
-      <metrics statements="44" coveredstatements="41" conditionals="9" coveredconditionals="8" methods="14" coveredmethods="13"/>
+      <metrics statements="44" coveredstatements="44" conditionals="9" coveredconditionals="9" methods="14" coveredmethods="14"/>
       <file name="authService.ts" path="/home/vinicao/Desktop/projetos/barber_rafa/back-end/src/services/authService.ts">
         <metrics statements="24" coveredstatements="24" conditionals="4" coveredconditionals="4" methods="8" coveredmethods="8"/>
         <line num="23" count="3" type="stmt"/>
@@ -192,33 +192,33 @@
         <line num="20" count="1" type="stmt"/>
       </file>
       <file name="serviceService.ts" path="/home/vinicao/Desktop/projetos/barber_rafa/back-end/src/services/serviceService.ts">
-        <metrics statements="15" coveredstatements="12" conditionals="4" coveredconditionals="3" methods="4" coveredmethods="3"/>
+        <metrics statements="15" coveredstatements="15" conditionals="4" coveredconditionals="4" methods="4" coveredmethods="4"/>
         <line num="12" count="3" type="cond" truecount="1" falsecount="0"/>
         <line num="13" count="1" type="stmt"/>
         <line num="18" count="1" type="stmt"/>
-        <line num="25" count="0" type="cond" truecount="0" falsecount="1"/>
-        <line num="26" count="0" type="stmt"/>
-        <line num="28" count="0" type="stmt"/>
-        <line num="32" count="3" type="stmt"/>
-        <line num="34" count="3" type="cond" truecount="1" falsecount="0"/>
-        <line num="36" count="2" type="stmt"/>
-        <line num="43" count="3" type="stmt"/>
-        <line num="45" count="2" type="stmt"/>
-        <line num="46" count="2" type="stmt"/>
-        <line num="47" count="1" type="cond" truecount="1" falsecount="0"/>
-        <line num="48" count="1" type="stmt"/>
-        <line num="52" count="2" type="stmt"/>
+        <line num="25" count="3" type="cond" truecount="1" falsecount="0"/>
+        <line num="26" count="1" type="stmt"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="32" count="6" type="stmt"/>
+        <line num="34" count="6" type="cond" truecount="1" falsecount="0"/>
+        <line num="36" count="4" type="stmt"/>
+        <line num="43" count="6" type="stmt"/>
+        <line num="45" count="4" type="stmt"/>
+        <line num="46" count="4" type="stmt"/>
+        <line num="47" count="5" type="cond" truecount="1" falsecount="0"/>
+        <line num="48" count="2" type="stmt"/>
+        <line num="52" count="4" type="stmt"/>
       </file>
     </package>
     <package name="src.utils">
-      <metrics statements="6" coveredstatements="6" conditionals="4" coveredconditionals="3" methods="2" coveredmethods="2"/>
+      <metrics statements="6" coveredstatements="6" conditionals="4" coveredconditionals="4" methods="2" coveredmethods="2"/>
       <file name="errorUtils.ts" path="/home/vinicao/Desktop/projetos/barber_rafa/back-end/src/utils/errorUtils.ts">
-        <metrics statements="6" coveredstatements="6" conditionals="4" coveredconditionals="3" methods="2" coveredmethods="2"/>
-        <line num="8" count="21" type="stmt"/>
-        <line num="12" count="21" type="cond" truecount="1" falsecount="0"/>
-        <line num="13" count="20" type="cond" truecount="1" falsecount="0"/>
-        <line num="14" count="19" type="cond" truecount="1" falsecount="0"/>
-        <line num="15" count="12" type="cond" truecount="0" falsecount="1"/>
+        <metrics statements="6" coveredstatements="6" conditionals="4" coveredconditionals="4" methods="2" coveredmethods="2"/>
+        <line num="8" count="25" type="stmt"/>
+        <line num="12" count="25" type="cond" truecount="1" falsecount="0"/>
+        <line num="13" count="23" type="cond" truecount="1" falsecount="0"/>
+        <line num="14" count="20" type="cond" truecount="1" falsecount="0"/>
+        <line num="15" count="13" type="cond" truecount="1" falsecount="0"/>
         <line num="16" count="12" type="stmt"/>
       </file>
     </package>
@@ -226,32 +226,32 @@
       <metrics statements="55" coveredstatements="55" conditionals="24" coveredconditionals="24" methods="8" coveredmethods="8"/>
       <file name="categoryFactory.ts" path="/home/vinicao/Desktop/projetos/barber_rafa/back-end/tests/factories/categoryFactory.ts">
         <metrics statements="7" coveredstatements="7" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
-        <line num="7" count="12" type="stmt"/>
-        <line num="9" count="12" type="cond" truecount="2" falsecount="0"/>
+        <line num="7" count="15" type="stmt"/>
+        <line num="9" count="15" type="cond" truecount="2" falsecount="0"/>
         <line num="10" count="1" type="stmt"/>
-        <line num="12" count="11" type="stmt"/>
-        <line num="19" count="10" type="stmt"/>
-        <line num="21" count="10" type="stmt"/>
-        <line num="25" count="10" type="stmt"/>
+        <line num="12" count="14" type="stmt"/>
+        <line num="19" count="13" type="stmt"/>
+        <line num="21" count="13" type="stmt"/>
+        <line num="25" count="13" type="stmt"/>
       </file>
       <file name="servicesFactory.ts" path="/home/vinicao/Desktop/projetos/barber_rafa/back-end/tests/factories/servicesFactory.ts">
         <metrics statements="16" coveredstatements="16" conditionals="8" coveredconditionals="8" methods="2" coveredmethods="2"/>
-        <line num="8" count="7" type="stmt"/>
-        <line num="9" count="7" type="stmt"/>
-        <line num="10" count="7" type="stmt"/>
-        <line num="11" count="7" type="stmt"/>
-        <line num="13" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="8" count="12" type="stmt"/>
+        <line num="9" count="12" type="stmt"/>
+        <line num="10" count="12" type="stmt"/>
+        <line num="11" count="12" type="stmt"/>
+        <line num="13" count="12" type="cond" truecount="2" falsecount="0"/>
         <line num="14" count="1" type="stmt"/>
-        <line num="19" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="19" count="11" type="cond" truecount="2" falsecount="0"/>
         <line num="20" count="1" type="stmt"/>
-        <line num="25" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="25" count="10" type="cond" truecount="2" falsecount="0"/>
         <line num="26" count="1" type="stmt"/>
-        <line num="31" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="31" count="9" type="cond" truecount="2" falsecount="0"/>
         <line num="32" count="1" type="stmt"/>
-        <line num="38" count="3" type="stmt"/>
-        <line num="48" count="1" type="stmt"/>
-        <line num="50" count="1" type="stmt"/>
-        <line num="59" count="1" type="stmt"/>
+        <line num="38" count="8" type="stmt"/>
+        <line num="48" count="6" type="stmt"/>
+        <line num="50" count="6" type="stmt"/>
+        <line num="59" count="6" type="stmt"/>
       </file>
       <file name="signInFactory.ts" path="/home/vinicao/Desktop/projetos/barber_rafa/back-end/tests/factories/signInFactory.ts">
         <metrics statements="17" coveredstatements="17" conditionals="4" coveredconditionals="4" methods="3" coveredmethods="3"/>
@@ -262,16 +262,16 @@
         <line num="16" count="3" type="cond" truecount="2" falsecount="0"/>
         <line num="17" count="1" type="stmt"/>
         <line num="21" count="2" type="stmt"/>
-        <line num="29" count="14" type="stmt"/>
-        <line num="30" count="14" type="stmt"/>
-        <line num="31" count="14" type="stmt"/>
-        <line num="32" count="14" type="stmt"/>
-        <line num="33" count="14" type="stmt"/>
-        <line num="35" count="14" type="stmt"/>
-        <line num="39" count="14" type="stmt"/>
-        <line num="48" count="12" type="stmt"/>
-        <line num="50" count="12" type="stmt"/>
-        <line num="52" count="12" type="stmt"/>
+        <line num="29" count="17" type="stmt"/>
+        <line num="30" count="17" type="stmt"/>
+        <line num="31" count="17" type="stmt"/>
+        <line num="32" count="17" type="stmt"/>
+        <line num="33" count="17" type="stmt"/>
+        <line num="35" count="17" type="stmt"/>
+        <line num="39" count="17" type="stmt"/>
+        <line num="48" count="15" type="stmt"/>
+        <line num="50" count="15" type="stmt"/>
+        <line num="52" count="15" type="stmt"/>
       </file>
       <file name="signUpFactory.ts" path="/home/vinicao/Desktop/projetos/barber_rafa/back-end/tests/factories/signUpFactory.ts">
         <metrics statements="15" coveredstatements="15" conditionals="10" coveredconditionals="10" methods="1" coveredmethods="1"/>

@@ -173,6 +173,12 @@ describe("GET /token/validation", () => {
         expect(validation.status).toBe(200);
     });
 
+    it("should return 401 if not given a token", async () => {
+        const validation = await supertest(app).post("/token/validation");
+
+        expect(validation.status).toBe(401);
+    });
+
     it("should return 401 given a invalid token", async () => {
         const token = "completelyinvalidtoken";
 
@@ -181,6 +187,17 @@ describe("GET /token/validation", () => {
             .set("Authorization", `Bearer ${token}`);
 
         expect(validation.status).toBe(401);
+    });
+
+    it("should return 422 given a valid token that is not from any user", async () => {
+        const token =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Im5hbWUiOiJKb2huIERvZSJ9fQ.xY01AjfmxskAvfrpMkXp8uw0XqlANlxC46bk22m_Hvk";
+
+        const validation = await supertest(app)
+            .post("/token/validation")
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(validation.status).toBe(422);
     });
 });
 
@@ -360,6 +377,67 @@ describe("POST /services/categoryTitle", () => {
             .set("Authorization", `Bearer ${token}`);
 
         expect(result.status).toBe(409);
+    });
+});
+
+describe("DELETE /services/categoryTitle/serviceName", () => {
+    beforeAll(connect);
+    beforeEach(truncate);
+    afterAll(disconnect);
+
+    it("should return 200 and remove the service from the array", async () => {
+        const { title } = await categoryFactory.insertCategory();
+        const serviceQuantity = 3;
+
+        for (let i = 0; i < serviceQuantity - 1; i++) {
+            await servicesFactory.insertService(title);
+        }
+        const body = await servicesFactory.insertService(title);
+
+        const token = await signInFactory.generateValidToken();
+
+        const categoryBefore = await db
+            .collection("categories")
+            .findOne({ title });
+
+        const result = await supertest(app)
+            .delete(`/services/${title}/${body.name}`)
+            .set("Authorization", `Bearer ${token}`);
+
+        const categoryAfter = await db
+            .collection("categories")
+            .findOne({ title });
+
+        expect(result.status).toBe(200);
+        expect(categoryAfter.services).toHaveLength(
+            categoryBefore.services.length - 1
+        );
+    });
+
+    it("should return 404 given a non-existent category", async () => {
+        const { title } = await categoryFactory.insertCategory();
+        const body = await servicesFactory.insertService(title);
+        const token = await signInFactory.generateValidToken();
+        const fakeTitle = "some title";
+
+        const result = await supertest(app)
+            .delete(`/services/${fakeTitle}/${body.name}`)
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(result.status).toBe(404);
+    });
+
+    it("should return 404 given a non-existent service", async () => {
+        const { title } = await categoryFactory.insertCategory();
+        await servicesFactory.insertService(title);
+        const token = await signInFactory.generateValidToken();
+        const fakeService = "some service";
+
+        const result = await supertest(app)
+            .delete(`/services/${title}/${fakeService}`)
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(result.status).toBe(404);
     });
 });
 

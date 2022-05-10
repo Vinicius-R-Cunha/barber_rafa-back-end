@@ -14,7 +14,7 @@ export default async function validateTokenMiddleware(
     }
 
     const tokenData = getTokenData(token);
-    res.locals.user = getUser(tokenData);
+    res.locals.user = await getUser(tokenData);
 
     next();
 }
