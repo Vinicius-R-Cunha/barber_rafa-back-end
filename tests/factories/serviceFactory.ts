@@ -8,7 +8,7 @@ export function serviceBody(missing?: MissingDataService) {
     const name = faker.internet.password();
     const price = faker.commerce.price();
     const duration = faker.commerce.productMaterial();
-    const description = faker.commerce.productDescription();
+    const description = faker.internet.password();
 
     if (missing === "name") {
         return {
