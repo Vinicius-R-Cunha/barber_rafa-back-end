@@ -13,11 +13,7 @@ categoryRouter.post(
     categoryController.create
 );
 
-categoryRouter.get(
-    "/categories",
-    validateTokenMiddleware,
-    categoryController.get
-);
+categoryRouter.get("/categories", categoryController.get);
 
 categoryRouter.delete(
     "/categories/:categoryTitle",
