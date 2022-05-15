@@ -26,7 +26,7 @@ export async function edit(
     if (!(await serviceExists(categoryTitle, oldServiceName)))
         throw { type: "not_found", message: "service not found" };
 
-    if (await serviceExists(categoryTitle, body.name))
+    if (await serviceExists(categoryTitle, body.name, oldServiceName))
         throw {
             type: "conflict",
             message: "there is a service with this name already",
@@ -53,11 +53,15 @@ async function validateCategory(categoryTitle: string) {
     return category;
 }
 
-async function serviceExists(categoryTitle: string, serviceName: string) {
+async function serviceExists(
+    categoryTitle: string,
+    serviceName: string,
+    oldServiceName?: string
+) {
     const category = await validateCategory(categoryTitle);
-
     let serviceExists = false;
     for (let i = 0; i < category?.services?.length; i++) {
+        if (category?.services[i]?.name === oldServiceName) continue;
         if (category?.services[i]?.name === serviceName) {
             serviceExists = true;
         }
