@@ -14,5 +14,7 @@ export async function signIn(req: Request, res: Response) {
 }
 
 export async function checkToken(req: Request, res: Response) {
-    res.sendStatus(200);
+    const { user } = res.locals;
+
+    res.status(200).send(user.email === process.env.ADMIN_EMAIL);
 }
