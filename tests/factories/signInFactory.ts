@@ -59,3 +59,38 @@ export async function generateValidToken() {
         }
     );
 }
+
+export async function signInAdmin() {
+    const name = faker.name.firstName();
+    const email = process.env.ADMIN_EMAIL;
+    const phone = faker.phone.phoneNumber("11 9####-####");
+    const password = faker.internet.password();
+    const encryptedPassword = bcrypt.hashSync(password, 10);
+
+    await db
+        .collection("users")
+        .insertOne({ name, email, phone, password: encryptedPassword });
+
+    return {
+        name,
+        email,
+        phone,
+        password,
+    };
+}
+
+export async function generateAdminToken() {
+    const { name, email, phone } = await signInAdmin();
+
+    const secretKey = process.env.JWT_SECRET;
+
+    return jwt.sign(
+        {
+            data: { name, email, phone },
+        },
+        secretKey,
+        {
+            expiresIn: 60 * 24 * 60 * 60,
+        }
+    );
+}
