@@ -1,7 +1,7 @@
 {
     "type": "module",
     "scripts": {
-        "start": "node ./src/server.js",
+        "start": "node ./src/server.ts",
         "dev": "nodemon src/server.ts",
         "dev:test": "dotenv -e .env.test nodemon src/server.ts",
         "test": "NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test jest -i",
