@@ -6,13 +6,13 @@ export async function create(req: Request, res: Response) {
 
     await categoryService.create(title);
 
-    res.sendStatus(201);
+    return res.sendStatus(201);
 }
 
 export async function get(req: Request, res: Response) {
     const categories = await categoryService.get();
 
-    res.status(200).send(categories);
+    return res.status(200).send(categories);
 }
 
 export async function deleteEmpty(req: Request, res: Response) {
@@ -20,7 +20,7 @@ export async function deleteEmpty(req: Request, res: Response) {
 
     const categories = await categoryService.deleteEmpty(categoryTitle);
 
-    res.status(200).send(categories);
+    return res.status(200).send(categories);
 }
 
 export async function edit(req: Request, res: Response) {
@@ -29,5 +29,5 @@ export async function edit(req: Request, res: Response) {
 
     const categories = await categoryService.edit(categoryTitle, title);
 
-    res.status(200).send(categories);
+    return res.status(200).send(categories);
 }

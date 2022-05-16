@@ -4,17 +4,17 @@ import * as authService from "../services/authService.js";
 export async function signUp(req: Request, res: Response) {
     await authService.signUp(req.body);
 
-    res.sendStatus(201);
+    return res.sendStatus(201);
 }
 
 export async function signIn(req: Request, res: Response) {
     const token = await authService.signIn(req.body);
 
-    res.status(200).send(token);
+    return res.status(200).send(token);
 }
 
 export async function checkToken(req: Request, res: Response) {
     const { user } = res.locals;
 
-    res.status(200).send(user.email === process.env.ADMIN_EMAIL);
+    return res.status(200).send(user.email === process.env.ADMIN_EMAIL);
 }

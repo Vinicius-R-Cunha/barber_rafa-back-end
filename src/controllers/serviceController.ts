@@ -6,7 +6,7 @@ export async function create(req: Request, res: Response) {
 
     await serviceService.create(req.body, categoryTitle);
 
-    res.sendStatus(201);
+    return res.sendStatus(201);
 }
 
 export async function edit(req: Request, res: Response) {
@@ -14,7 +14,7 @@ export async function edit(req: Request, res: Response) {
 
     await serviceService.edit(serviceName, req.body, categoryTitle);
 
-    res.sendStatus(200);
+    return res.sendStatus(200);
 }
 
 export async function deleteService(req: Request, res: Response) {
@@ -22,5 +22,5 @@ export async function deleteService(req: Request, res: Response) {
 
     await serviceService.deleteService(categoryTitle, serviceName);
 
-    res.sendStatus(200);
+    return res.sendStatus(200);
 }
