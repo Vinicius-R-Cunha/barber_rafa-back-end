@@ -4,8 +4,8 @@ import { CalendarData } from "../services/calendarService.js";
 const calendarSchema = Joi.object<CalendarData>({
     summary: Joi.string().required(),
     description: Joi.string().required(),
-    startTime: Joi.string().required(),
-    endTime: Joi.string().required(),
+    startTime: Joi.date().required(),
+    endTime: Joi.date().required(),
 });
 
 export default calendarSchema;

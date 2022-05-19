@@ -7,6 +7,8 @@ export interface CalendarData {
     endTime: string;
 }
 
+export type FreeBusyData = Omit<CalendarData, "summary" | "description">;
+
 export async function create(body: CalendarData) {
     try {
         const event = {
@@ -14,11 +16,11 @@ export async function create(body: CalendarData) {
             description: body.description,
             colorId: "7",
             start: {
-                dateTime: "2022-05-19T14:35:00.000Z",
+                dateTime: body.startTime,
                 timeZone: "America/Sao_Paulo",
             },
             end: {
-                dateTime: "2022-05-19T14:55:00.000Z",
+                dateTime: body.endTime,
                 timeZone: "America/Sao_Paulo",
             },
         };
@@ -31,6 +33,30 @@ export async function create(body: CalendarData) {
         });
 
         return;
+    } catch (err) {
+        throw {
+            type: "bad_request",
+            message: "The API returned an error: " + err,
+        };
+    }
+}
+
+export async function getFreeBusy(body: FreeBusyData) {
+    try {
+        const event = {
+            timeMin: body.startTime,
+            timeMax: body.endTime,
+            timeZone: "America/Sao_Paulo",
+            items: [{ id: "primary" }],
+        };
+
+        const calendar = getCalendar();
+
+        const resp = await calendar.freebusy.query({
+            requestBody: event,
+        });
+
+        return resp.data.calendars.primary.busy;
     } catch (err) {
         throw {
             type: "bad_request",
