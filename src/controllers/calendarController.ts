@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import * as calendarService from "../services/calendarService.js";
 
-export async function getUpcoming(req: Request, res: Response) {
-    const data = await calendarService.getEvents();
+export async function createEvent(req: Request, res: Response) {
+    await calendarService.create(req.body);
 
-    return res.status(200).send(data);
+    return res.sendStatus(200);
 }
