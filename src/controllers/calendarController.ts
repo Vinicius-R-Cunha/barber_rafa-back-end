@@ -7,8 +7,8 @@ export async function createEvent(req: Request, res: Response) {
     return res.sendStatus(201);
 }
 
-export async function getFreeBusy(req: Request, res: Response) {
-    const freeBusy = await calendarService.getFreeBusy(req.body);
+export async function checkAvailability(req: Request, res: Response) {
+    const available = await calendarService.checkAvailability(req.body);
 
-    return res.status(200).send(freeBusy);
+    return res.status(200).send(available);
 }

@@ -3,7 +3,7 @@ import * as calendarController from "../controllers/calendarController.js";
 import { validateSchemaMiddleware } from "../middlewares/validateSchemaMiddleware.js";
 import validateTokenMiddleware from "../middlewares/validateTokenMiddleware.js";
 import calendarSchema from "../schemas/calendarSchema.js";
-import freeBusySchema from "../schemas/freeBusySchema.js";
+import checkAvailabilitySchema from "../schemas/checkAvailabilitySchema.js";
 
 const calendarRouter = Router();
 
@@ -15,10 +15,10 @@ calendarRouter.post(
 );
 
 calendarRouter.post(
-    "/calendar/freebusy",
-    validateSchemaMiddleware(freeBusySchema),
+    "/calendar/check-availability",
+    validateSchemaMiddleware(checkAvailabilitySchema),
     validateTokenMiddleware,
-    calendarController.getFreeBusy
+    calendarController.checkAvailability
 );
 
 export default calendarRouter;

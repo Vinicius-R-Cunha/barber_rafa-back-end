@@ -1,4 +1,6 @@
 import { google } from "googleapis";
+import dayjs from "dayjs";
+import * as scheduleRepository from "../repositories/scheduleRepository.js";
 
 export interface CalendarData {
     summary: string;
@@ -7,7 +9,10 @@ export interface CalendarData {
     endTime: string;
 }
 
-export type FreeBusyData = Omit<CalendarData, "summary" | "description">;
+export type CheckAvailabilityData = Omit<
+    CalendarData,
+    "summary" | "description"
+>;
 
 export async function create(body: CalendarData) {
     try {
@@ -41,7 +46,7 @@ export async function create(body: CalendarData) {
     }
 }
 
-export async function getFreeBusy(body: FreeBusyData) {
+export async function checkAvailability(body: CheckAvailabilityData) {
     try {
         const event = {
             timeMin: body.startTime,
@@ -56,7 +61,12 @@ export async function getFreeBusy(body: FreeBusyData) {
             requestBody: event,
         });
 
-        return resp.data.calendars.primary.busy;
+        const weekday = await scheduleRepository.getScheduleByWeekId(
+            dayjs(body.startTime).day()
+        );
+        const schedule = weekday.schedule;
+
+        return showAvailableTimes(schedule, resp.data.calendars.primary.busy);
     } catch (err) {
         throw {
             type: "bad_request",
@@ -80,4 +90,14 @@ function getCalendar() {
         version: "v3",
         auth: oAuth2Client,
     });
+}
+
+function showAvailableTimes(schedule: string[], freeBusy: any) {
+    for (let i = 0; i < freeBusy.length; i++) {
+        const startTime = dayjs(freeBusy[i].start).format("HH:mm");
+        const range =
+            dayjs(freeBusy[i].end).diff(dayjs(freeBusy[i].start), "m") / 15;
+        schedule.splice(schedule.indexOf(startTime), range);
+    }
+    return schedule;
 }
