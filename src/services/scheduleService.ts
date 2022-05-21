@@ -13,7 +13,6 @@ export async function edit(body: CheckAvailabilityData, weekId: number) {
     }
 
     const schedule = arr.map((date) => date.format("HH:mm"));
-    const resp = await scheduleRepository.editByWeekId(weekId, schedule);
-    console.log(resp);
+    await scheduleRepository.editByWeekId(weekId, schedule);
     return;
 }

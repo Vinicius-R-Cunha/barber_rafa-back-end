@@ -5,7 +5,7 @@ const calendarSchema = Joi.object<CalendarData>({
     summary: Joi.string().required(),
     description: Joi.string().required(),
     startTime: Joi.date().required(),
-    endTime: Joi.date().required(),
+    duration: Joi.string().required(),
 });
 
 export default calendarSchema;
