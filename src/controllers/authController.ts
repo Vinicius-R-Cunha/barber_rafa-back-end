@@ -16,5 +16,10 @@ export async function signIn(req: Request, res: Response) {
 export async function checkToken(req: Request, res: Response) {
     const { user } = res.locals;
 
-    return res.status(200).send(user.email === process.env.ADMIN_EMAIL);
+    return res.status(200).send({
+        isAdmin: user.email === process.env.ADMIN_EMAIL,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+    });
 }
