@@ -44,7 +44,7 @@ export async function signIn(body: SignInData) {
 
 function checkIfPasswordsMatch(password: string, passwordConfirmation: string) {
     if (password !== passwordConfirmation) {
-        throw { type: "conflict", message: "passwords do not match" };
+        throw { type: "conflict", message: "As senhas não batem" };
     }
     return;
 }
@@ -53,7 +53,7 @@ async function checkIfEmailExists(email: string) {
     const user = await userRepository.findByEmail(email);
 
     if (user) {
-        throw { type: "conflict", message: "email already exists" };
+        throw { type: "conflict", message: "Esse email já está em uso" };
     }
 }
 
@@ -63,7 +63,8 @@ function encryptPassword(password: string) {
 
 async function validateLogin(email: string, password: string) {
     const user = await userRepository.findByEmail(email);
-    if (!user) throw { type: "conflict", message: "incorrect email/password" };
+    if (!user)
+        throw { type: "conflict", message: "email e/ou senha incorretos" };
 
     validatePassword(user, password);
 
@@ -72,7 +73,7 @@ async function validateLogin(email: string, password: string) {
 
 function validatePassword(user: any, password: string) {
     if (!bcrypt.compareSync(password, user.password)) {
-        throw { type: "conflict", message: "incorrect email/password" };
+        throw { type: "conflict", message: "email e/ou senha incorretos" };
     }
 }
 
