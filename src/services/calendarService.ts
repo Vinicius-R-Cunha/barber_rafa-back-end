@@ -116,17 +116,27 @@ function showAvailableTimes(
     duration: string
 ) {
     for (let i = 0; i < freeBusy.length; i++) {
-        const startTime = dayjs(freeBusy[i].start).format("HH:mm");
+        const startTime = dayjs(freeBusy[i].start)
+            .subtract(3, "hour")
+            .format("HH:mm");
         let range: number;
         if (
-            dayjs(freeBusy[i].end).diff(dayjs(freeBusy[i].start), "m") % 15 ===
+            dayjs(freeBusy[i].end)
+                .subtract(3, "hour")
+                .diff(dayjs(freeBusy[i].start).subtract(3, "hour"), "m") %
+                15 ===
             0
         ) {
             range =
-                dayjs(freeBusy[i].end).diff(dayjs(freeBusy[i].start), "m") / 15;
+                dayjs(freeBusy[i].end)
+                    .subtract(3, "hour")
+                    .diff(dayjs(freeBusy[i].start).subtract(3, "hour"), "m") /
+                15;
         } else {
             range =
-                dayjs(freeBusy[i].end).diff(dayjs(freeBusy[i].start), "m") /
+                dayjs(freeBusy[i].end)
+                    .subtract(3, "hour")
+                    .diff(dayjs(freeBusy[i].start).subtract(3, "hour"), "m") /
                     15 +
                 1;
         }
@@ -140,7 +150,7 @@ function checkIfDurationFits(schedule: string[], duration: string) {
     const { durationInMinutes, range } = getDeleteRangeFromDuration(duration);
 
     const dayjsSchedule = schedule.map((time) =>
-        dayjs(`01/01/2000 ${time} -03:00`, "DD/MM/YYYY H:mm Z")
+        dayjs(`01/01/2000 ${time} -00:00`, "DD/MM/YYYY H:mm Z")
     );
 
     const filteredSchedule = [];
