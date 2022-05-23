@@ -50,7 +50,8 @@ export async function create(body: CalendarData, email: string) {
         await reservationRepository.insertOnUserByEmail(
             email,
             body.summary,
-            body.startTime
+            body.startTime,
+            endTime
         );
 
         return;

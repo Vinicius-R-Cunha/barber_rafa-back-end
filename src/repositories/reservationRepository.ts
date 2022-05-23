@@ -4,7 +4,8 @@ import { db } from "../database.js";
 export async function insertOnUserByEmail(
     email: string,
     summary: string,
-    startTime: string
+    startTime: string,
+    endTime: string
 ) {
     return await db.collection("users").updateOne(
         {
@@ -12,7 +13,12 @@ export async function insertOnUserByEmail(
         },
         {
             $push: {
-                reservations: { _id: new ObjectId(), summary, startTime },
+                reservations: {
+                    _id: new ObjectId(),
+                    summary,
+                    startTime,
+                    endTime,
+                },
             },
         }
     );
