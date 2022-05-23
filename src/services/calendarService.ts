@@ -140,7 +140,7 @@ function checkIfDurationFits(schedule: string[], duration: string) {
     const { durationInMinutes, range } = getDeleteRangeFromDuration(duration);
 
     const dayjsSchedule = schedule.map((time) =>
-        dayjs(`01/01/2000 ${time} -00:00`, "DD/MM/YYYY H:mm Z")
+        dayjs(`01/01/2000 ${time} -03:00`, "DD/MM/YYYY H:mm Z")
     );
 
     const filteredSchedule = [];
