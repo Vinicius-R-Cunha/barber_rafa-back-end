@@ -120,6 +120,7 @@ function showAvailableTimes(
             .subtract(3, "hour")
             .format("HH:mm");
         let range: number;
+        console.log(startTime);
         if (
             dayjs(freeBusy[i].end)
                 .subtract(3, "hour")
