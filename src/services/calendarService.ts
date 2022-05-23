@@ -1,8 +1,10 @@
 import { google } from "googleapis";
-import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import * as scheduleRepository from "../repositories/scheduleRepository.js";
 import * as reservationRepository from "../repositories/reservationRepository.js";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc.js";
+dayjs.extend(utc);
 
 export interface CalendarData {
     summary: string;
@@ -115,6 +117,7 @@ function showAvailableTimes(
     freeBusy: any[],
     duration: string
 ) {
+    console.log(freeBusy);
     for (let i = 0; i < freeBusy.length; i++) {
         const startTime = dayjs(freeBusy[i].start)
             .subtract(3, "hour")
