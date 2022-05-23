@@ -10,7 +10,9 @@ export async function createNewUser(
     phone: string,
     password: string
 ) {
-    await db.collection("users").insertOne({ name, email, phone, password });
+    await db
+        .collection("users")
+        .insertOne({ name, email, phone, password, reservations: [] });
 
     return;
 }

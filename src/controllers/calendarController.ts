@@ -2,7 +2,9 @@ import { Request, Response } from "express";
 import * as calendarService from "../services/calendarService.js";
 
 export async function createEvent(req: Request, res: Response) {
-    await calendarService.create(req.body);
+    const { user } = res.locals;
+
+    await calendarService.create(req.body, user.email);
 
     return res.sendStatus(201);
 }

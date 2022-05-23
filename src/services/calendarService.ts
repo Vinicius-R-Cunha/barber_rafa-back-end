@@ -2,6 +2,7 @@ import { google } from "googleapis";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import * as scheduleRepository from "../repositories/scheduleRepository.js";
+import * as reservationRepository from "../repositories/reservationRepository.js";
 
 export interface CalendarData {
     summary: string;
@@ -16,7 +17,7 @@ export interface CheckAvailabilityData {
     duration: string;
 }
 
-export async function create(body: CalendarData) {
+export async function create(body: CalendarData, email: string) {
     try {
         let startTime: string;
         if (body.startTime[body.startTime.length - 1] === "Z") {
@@ -45,6 +46,12 @@ export async function create(body: CalendarData) {
             calendarId: "primary",
             requestBody: event,
         });
+
+        await reservationRepository.insertOnUserByEmail(
+            email,
+            body.summary,
+            body.startTime
+        );
 
         return;
     } catch (err) {
