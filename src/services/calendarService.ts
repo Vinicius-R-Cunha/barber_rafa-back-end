@@ -3,8 +3,6 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import * as scheduleRepository from "../repositories/scheduleRepository.js";
 import * as reservationRepository from "../repositories/reservationRepository.js";
 import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc.js";
-dayjs.extend(utc);
 
 export interface CalendarData {
     summary: string;
@@ -117,33 +115,22 @@ function showAvailableTimes(
     freeBusy: any[],
     duration: string
 ) {
-    console.log(freeBusy);
     for (let i = 0; i < freeBusy.length; i++) {
+        const durationFreeBusy = dayjs(freeBusy[i].end).diff(
+            dayjs(freeBusy[i].start),
+            "m"
+        );
+
+        let range: number;
+        if (durationFreeBusy % 15 === 0) {
+            range = durationFreeBusy / 15;
+        } else {
+            range = durationFreeBusy / 15 + 1;
+        }
+        //IMPORTANTE em localhost tirar o subtract
         const startTime = dayjs(freeBusy[i].start)
             .subtract(3, "hour")
             .format("HH:mm");
-        let range: number;
-        console.log(startTime);
-        if (
-            dayjs(freeBusy[i].end)
-                .subtract(3, "hour")
-                .diff(dayjs(freeBusy[i].start).subtract(3, "hour"), "m") %
-                15 ===
-            0
-        ) {
-            range =
-                dayjs(freeBusy[i].end)
-                    .subtract(3, "hour")
-                    .diff(dayjs(freeBusy[i].start).subtract(3, "hour"), "m") /
-                15;
-        } else {
-            range =
-                dayjs(freeBusy[i].end)
-                    .subtract(3, "hour")
-                    .diff(dayjs(freeBusy[i].start).subtract(3, "hour"), "m") /
-                    15 +
-                1;
-        }
         schedule.splice(schedule.indexOf(startTime) + 1, range - 1);
     }
 
@@ -198,7 +185,8 @@ function getDeleteRangeFromDuration(duration: string) {
 
     const durationInMinutes = range;
     if (range % 15 === 0) range = range / 15;
-    else range = range / 15 + 1;
+    else range = Math.floor(range / 15) + 1;
+
     return { durationInMinutes, range };
 }
 
