@@ -1,8 +1,16 @@
-import * as userRepository from "../repositories/userRepository.js";
 import * as reservationRepository from "../repositories/reservationRepository.js";
+import dayjs from "dayjs";
 
 export async function getReservationsByEmail(email: string) {
-    const user = await userRepository.findByEmail(email);
+    const reservations = await reservationRepository.getByEmail(email);
 
-    return user.reservations;
+    const filteredReservations = getRecentReservations(reservations);
+
+    return filteredReservations;
+}
+
+function getRecentReservations(reservations: any[]) {
+    const today = dayjs();
+
+    return reservations.filter((value) => dayjs(value.endTime).isAfter(today));
 }

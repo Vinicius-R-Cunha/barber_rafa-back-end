@@ -23,3 +23,8 @@ export async function insertOnUserByEmail(
         }
     );
 }
+
+export async function getByEmail(email: string) {
+    const user = await db.collection("users").findOne({ email });
+    return user.reservations;
+}
