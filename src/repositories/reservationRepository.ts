@@ -24,6 +24,21 @@ export async function insertOnUserByEmail(
     );
 }
 
+export async function remove(email: string, reservationId: number) {
+    return await db.collection("users").updateOne(
+        {
+            email,
+        },
+        {
+            $pull: {
+                reservations: {
+                    _id: new ObjectId(reservationId),
+                },
+            },
+        }
+    );
+}
+
 export async function getByEmail(email: string) {
     const user = await db.collection("users").findOne({ email });
     return user.reservations;

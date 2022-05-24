@@ -10,3 +10,12 @@ export async function getReservationsByEmail(req: Request, res: Response) {
 
     res.status(200).send(reservations);
 }
+
+export async function removeReservation(req: Request, res: Response) {
+    const { user } = res.locals;
+    const { reservationId } = req.params;
+
+    await reservationService.remove(user.email, +reservationId);
+
+    res.sendStatus(200);
+}
