@@ -127,13 +127,16 @@ function showAvailableTimes(
         } else {
             range = durationFreeBusy / 15 + 1;
         }
-        //IMPORTANTE em localhost tirar o subtract
-        const startTime = dayjs(freeBusy[i].start)
-            .subtract(3, "hour")
-            .format("HH:mm");
-        schedule.splice(schedule.indexOf(startTime) + 1, range - 1);
+        const startTime = dayjs(freeBusy[i].start).format("HH:mm");
+
+        if (range === 1) {
+            schedule.splice(schedule.indexOf(startTime) + 1, 0, "1:00");
+        } else {
+            schedule.splice(schedule.indexOf(startTime) + 1, range - 1);
+        }
     }
 
+    console.log(schedule);
     return checkIfDurationFits(schedule, duration);
 }
 
