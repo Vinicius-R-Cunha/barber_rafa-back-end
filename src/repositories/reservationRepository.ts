@@ -3,6 +3,7 @@ import { db } from "../database.js";
 
 export async function insertOnUserByEmail(
     email: string,
+    eventId: string,
     summary: string,
     startTime: string,
     endTime: string
@@ -15,6 +16,7 @@ export async function insertOnUserByEmail(
             $push: {
                 reservations: {
                     _id: new ObjectId(),
+                    eventId,
                     summary,
                     startTime,
                     endTime,
@@ -24,7 +26,7 @@ export async function insertOnUserByEmail(
     );
 }
 
-export async function remove(email: string, reservationId: string) {
+export async function remove(email: string, eventId: string) {
     return await db.collection("users").updateOne(
         {
             email,
@@ -32,7 +34,7 @@ export async function remove(email: string, reservationId: string) {
         {
             $pull: {
                 reservations: {
-                    _id: new ObjectId(reservationId),
+                    eventId,
                 },
             },
         }

@@ -13,9 +13,9 @@ export async function getReservationsByEmail(req: Request, res: Response) {
 
 export async function removeReservation(req: Request, res: Response) {
     const { user } = res.locals;
-    const { reservationId } = req.params;
+    const { eventId } = req.params;
 
-    await reservationService.remove(user.email, reservationId);
+    await reservationService.remove(user.email, eventId);
 
     res.sendStatus(200);
 }

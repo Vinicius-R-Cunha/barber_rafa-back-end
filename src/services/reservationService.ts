@@ -5,13 +5,11 @@ import dayjs from "dayjs";
 export async function getReservationsByEmail(email: string) {
     const reservations = await reservationRepository.getByEmail(email);
 
-    const filteredReservations = getRecentReservations(reservations);
-
-    return filteredReservations;
+    return getRecentReservations(reservations);
 }
 
-export async function remove(email: string, reservationId: string) {
-    return await reservationRepository.remove(email, reservationId);
+export async function remove(email: string, eventId: string) {
+    return await reservationRepository.remove(email, eventId);
 }
 
 function getRecentReservations(reservations: any[]) {

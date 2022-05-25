@@ -42,13 +42,16 @@ export async function create(body: CalendarData, email: string) {
 
         const calendar = getCalendar();
 
-        calendar.events.insert({
+        const response = await calendar.events.insert({
             calendarId: "primary",
             requestBody: event,
         });
 
+        const eventId = response.data.id;
+
         await reservationRepository.insertOnUserByEmail(
             email,
+            eventId,
             body.summary,
             body.startTime,
             endTime

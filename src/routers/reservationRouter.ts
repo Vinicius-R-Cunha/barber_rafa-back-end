@@ -10,7 +10,7 @@ reservationRouter.get(
 );
 
 reservationRouter.delete(
-    "/reservations/:reservationId",
+    "/reservations/:eventId",
     validateTokenMiddleware,
     reservationController.removeReservation
 );
