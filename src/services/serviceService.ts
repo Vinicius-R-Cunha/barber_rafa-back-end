@@ -1,5 +1,6 @@
 import * as categoryRepository from "../repositories/categoryRepository.js";
 import * as serviceRepository from "../repositories/serviceRepository.js";
+import { stripHtml } from "string-strip-html";
 
 export interface ServiceData {
     name: string;
@@ -9,13 +10,20 @@ export interface ServiceData {
 }
 
 export async function create(body: ServiceData, categoryTitle: string) {
-    if (await serviceExists(categoryTitle, body.name))
+    const bodyStrip = {
+        name: stripHtml(body.name).result.trim(),
+        price: body.price,
+        duration: stripHtml(body.duration).result.trim(),
+        description: stripHtml(body.description).result.trim(),
+    };
+
+    if (await serviceExists(categoryTitle, bodyStrip.name))
         throw {
             type: "conflict",
             message: "there is a service with this name already",
         };
 
-    await serviceRepository.createNewService(body, categoryTitle);
+    await serviceRepository.createNewService(bodyStrip, categoryTitle);
 }
 
 export async function edit(
@@ -23,16 +31,36 @@ export async function edit(
     body: ServiceData,
     categoryTitle: string
 ) {
-    if (!(await serviceExists(categoryTitle, oldServiceName)))
+    const bodyStrip = {
+        name: stripHtml(body.name).result.trim(),
+        price: body.price,
+        duration: stripHtml(body.duration).result.trim(),
+        description: stripHtml(body.description).result.trim(),
+    };
+
+    const oldServiceNameStrip = stripHtml(oldServiceName).result.trim();
+    const categoryTitleStrip = stripHtml(categoryTitle).result.trim();
+
+    if (!(await serviceExists(categoryTitleStrip, oldServiceNameStrip)))
         throw { type: "not_found", message: "service not found" };
 
-    if (await serviceExists(categoryTitle, body.name, oldServiceName))
+    if (
+        await serviceExists(
+            categoryTitleStrip,
+            bodyStrip.name,
+            oldServiceNameStrip
+        )
+    )
         throw {
             type: "conflict",
             message: "there is a service with this name already",
         };
 
-    await serviceRepository.editService(oldServiceName, body, categoryTitle);
+    await serviceRepository.editService(
+        oldServiceNameStrip,
+        bodyStrip,
+        categoryTitleStrip
+    );
 }
 
 export async function deleteService(

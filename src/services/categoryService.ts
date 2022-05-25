@@ -1,11 +1,14 @@
 import * as categoryRepository from "../repositories/categoryRepository.js";
+import { stripHtml } from "string-strip-html";
 
 export interface CategoryData {
     title: string;
 }
 
 export async function create(title: string) {
-    if (await categoryExists(title)) {
+    const titleStrip = stripHtml(title).result.trim();
+
+    if (await categoryExists(titleStrip)) {
         throw {
             type: "conflict",
             message: "there is a category with this name already",
@@ -43,7 +46,10 @@ async function categoryIsEmpty(title: string) {
     return category?.services.length === 0;
 }
 
-export async function edit(oldTitle: string, newTitle: string) {
+export async function edit(categoryTitle: string, title: string) {
+    const oldTitle = stripHtml(categoryTitle).result.trim();
+    const newTitle = stripHtml(title).result.trim();
+
     if (!(await categoryExists(oldTitle))) {
         throw {
             type: "not_found",
