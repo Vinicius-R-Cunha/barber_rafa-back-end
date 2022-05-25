@@ -1,4 +1,6 @@
-import { google } from "googleapis";
+// import { google } from "googleapis";
+import { auth } from "googleapis/build/src/apis/oauth2/index.js";
+import { calendar } from "googleapis/build/src/apis/calendar/index.js";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import * as scheduleRepository from "../repositories/scheduleRepository.js";
 import * as reservationRepository from "../repositories/reservationRepository.js";
@@ -121,7 +123,7 @@ export async function checkAvailability(body: CheckAvailabilityData) {
 }
 
 function getCalendar() {
-    const oAuth2Client = new google.auth.OAuth2(
+    const oAuth2Client = new auth.OAuth2(
         process.env.CLIENT_ID,
         process.env.CLIENT_SECRET,
         "http://localhost"
@@ -131,10 +133,24 @@ function getCalendar() {
         refresh_token: process.env.REFRESH_TOKEN,
     });
 
-    return google.calendar({
+    return calendar({
         version: "v3",
         auth: oAuth2Client,
     });
+    // const oAuth2Client = new google.auth.OAuth2(
+    //     process.env.CLIENT_ID,
+    //     process.env.CLIENT_SECRET,
+    //     "http://localhost"
+    // );
+
+    // oAuth2Client.setCredentials({
+    //     refresh_token: process.env.REFRESH_TOKEN,
+    // });
+
+    // return google.calendar({
+    //     version: "v3",
+    //     auth: oAuth2Client,
+    // });
 }
 
 function showAvailableTimes(
