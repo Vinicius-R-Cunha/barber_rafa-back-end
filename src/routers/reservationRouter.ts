@@ -9,10 +9,4 @@ reservationRouter.get(
     reservationController.getReservationsByEmail
 );
 
-reservationRouter.delete(
-    "/reservations/:eventId",
-    validateTokenMiddleware,
-    reservationController.removeReservation
-);
-
 export default reservationRouter;

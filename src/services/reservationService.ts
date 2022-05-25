@@ -8,10 +8,6 @@ export async function getReservationsByEmail(email: string) {
     return getRecentReservations(reservations);
 }
 
-export async function remove(email: string, eventId: string) {
-    return await reservationRepository.remove(email, eventId);
-}
-
 function getRecentReservations(reservations: any[]) {
     const today = dayjs();
 

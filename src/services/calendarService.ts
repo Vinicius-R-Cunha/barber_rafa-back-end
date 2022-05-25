@@ -66,6 +66,25 @@ export async function create(body: CalendarData, email: string) {
     }
 }
 
+export async function remove(email: string, eventId: string) {
+    try {
+        const calendar = getCalendar();
+
+        await calendar.events.delete({
+            calendarId: "primary",
+            eventId,
+        });
+
+        await reservationRepository.remove(email, eventId);
+        return;
+    } catch (err) {
+        throw {
+            type: "bad_request",
+            message: "The API returned an error: " + err,
+        };
+    }
+}
+
 export async function checkAvailability(body: CheckAvailabilityData) {
     try {
         const event = {

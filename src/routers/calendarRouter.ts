@@ -14,6 +14,12 @@ calendarRouter.post(
     calendarController.createEvent
 );
 
+calendarRouter.delete(
+    "/calendar/:eventId",
+    validateTokenMiddleware,
+    calendarController.deleteEvent
+);
+
 calendarRouter.post(
     "/calendar/check-availability",
     validateSchemaMiddleware(checkAvailabilitySchema),

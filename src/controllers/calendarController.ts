@@ -14,3 +14,12 @@ export async function checkAvailability(req: Request, res: Response) {
 
     return res.status(200).send(available);
 }
+
+export async function deleteEvent(req: Request, res: Response) {
+    const { user } = res.locals;
+    const { eventId } = req.params;
+
+    await calendarService.remove(user.email, eventId);
+
+    res.sendStatus(200);
+}
