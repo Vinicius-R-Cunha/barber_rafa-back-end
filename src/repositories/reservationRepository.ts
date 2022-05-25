@@ -24,7 +24,7 @@ export async function insertOnUserByEmail(
     );
 }
 
-export async function remove(email: string, reservationId: number) {
+export async function remove(email: string, reservationId: string) {
     return await db.collection("users").updateOne(
         {
             email,

@@ -136,7 +136,6 @@ function showAvailableTimes(
         }
     }
 
-    console.log(schedule);
     return checkIfDurationFits(schedule, duration);
 }
 

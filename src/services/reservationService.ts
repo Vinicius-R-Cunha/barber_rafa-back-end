@@ -10,7 +10,7 @@ export async function getReservationsByEmail(email: string) {
     return filteredReservations;
 }
 
-export async function remove(email: string, reservationId: number) {
+export async function remove(email: string, reservationId: string) {
     return await reservationRepository.remove(email, reservationId);
 }
 
