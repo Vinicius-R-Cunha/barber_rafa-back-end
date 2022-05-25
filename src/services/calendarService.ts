@@ -106,7 +106,12 @@ export async function checkAvailability(body: CheckAvailabilityData) {
         );
         const schedule = weekday.schedule;
 
-        return showAvailableTimes(schedule, busy, body.duration);
+        return showAvailableTimes(
+            schedule,
+            busy,
+            body.duration,
+            body.startTime
+        );
     } catch (err) {
         throw {
             type: "bad_request",
@@ -135,7 +140,8 @@ function getCalendar() {
 function showAvailableTimes(
     schedule: string[],
     freeBusy: any[],
-    duration: string
+    duration: string,
+    bodyStartTime: string
 ) {
     for (let i = 0; i < freeBusy.length; i++) {
         const durationFreeBusy = dayjs(freeBusy[i].end).diff(
@@ -158,21 +164,28 @@ function showAvailableTimes(
         }
     }
 
-    return checkIfDurationFits(schedule, duration);
+    return checkIfDurationFits(schedule, duration, bodyStartTime);
 }
 
-function checkIfDurationFits(schedule: string[], duration: string) {
+function checkIfDurationFits(
+    schedule: string[],
+    duration: string,
+    bodyStartTime: string
+) {
     const { durationInMinutes, range } = getDeleteRangeFromDuration(duration);
+    const eventDate = dayjs(bodyStartTime).format("MM/DD/YYYY");
+    const today = dayjs();
 
     const dayjsSchedule = schedule.map((time) =>
-        dayjs(`01/01/2000 ${time} -00:00`, "DD/MM/YYYY H:mm Z")
+        dayjs(`${eventDate} ${time} -00:00`, "MM/DD/YYYY H:mm Z")
     );
 
     const filteredSchedule = [];
     for (let i = 0; i < dayjsSchedule.length - range; i++) {
         if (
             dayjsSchedule[i + range].diff(dayjsSchedule[i], "m") ===
-            durationInMinutes
+                durationInMinutes &&
+            dayjsSchedule[i].isAfter(today)
         ) {
             filteredSchedule.push(schedule[i]);
         }
