@@ -20,6 +20,7 @@
         "joi-translation-pt-br": "^0.0.6",
         "jsonwebtoken": "^8.5.1",
         "mongodb": "^4.5.0",
+        "string-strip-html": "^9.1.12",
         "ts-node": "^10.7.0"
     },
     "devDependencies": {

@@ -1,6 +1,7 @@
 import * as userRepository from "../repositories/userRepository.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { stripHtml } from "string-strip-html";
 
 export interface SignUpData {
     name: string;
@@ -20,7 +21,16 @@ export type User = Omit<SignUpData, "passwordConfirmation">;
 export type TokenData = Omit<SignUpData, "password" | "passwordConfirmation">;
 
 export async function signUp(body: SignUpData) {
-    const { name, email, phone, password, passwordConfirmation } = body;
+    const bodyStrip = {
+        name: stripHtml(body.name).result.trim(),
+        email: stripHtml(body.email).result.trim(),
+        phone: stripHtml(body.phone).result.trim(),
+        password: stripHtml(body.password).result.trim(),
+        passwordConfirmation: stripHtml(
+            body.passwordConfirmation
+        ).result.trim(),
+    };
+    const { name, email, phone, password, passwordConfirmation } = bodyStrip;
 
     checkIfPasswordsMatch(password, passwordConfirmation);
     await checkIfEmailExists(email);
@@ -32,7 +42,11 @@ export async function signUp(body: SignUpData) {
 }
 
 export async function signIn(body: SignInData) {
-    const { email, password } = body;
+    const bodyStrip = {
+        email: stripHtml(body.email).result.trim(),
+        password: stripHtml(body.password).result.trim(),
+    };
+    const { email, password } = bodyStrip;
 
     const user = await validateLogin(email, password);
     return generateToken({
