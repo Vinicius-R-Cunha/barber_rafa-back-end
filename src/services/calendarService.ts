@@ -61,6 +61,7 @@ export async function create(body: CalendarData, email: string) {
 
         return;
     } catch (err) {
+        console.log(err.response.data);
         throw {
             type: "bad_request",
             message: "The API returned an error: " + err,
@@ -115,6 +116,7 @@ export async function checkAvailability(body: CheckAvailabilityData) {
             body.startTime
         );
     } catch (err) {
+        console.log(err.response.data);
         throw {
             type: "bad_request",
             message: "The API returned an error: " + err,
