@@ -192,7 +192,7 @@ function checkIfDurationFits(
 ) {
     const { durationInMinutes, range } = getDeleteRangeFromDuration(duration);
     const eventDate = dayjs(bodyStartTime).format("MM/DD/YYYY");
-    const today = dayjs();
+    const today = dayjs().add(-3, "hour");
 
     const dayjsSchedule = schedule.map((time) =>
         dayjs(`${eventDate} ${time} -00:00`, "MM/DD/YYYY H:mm Z")
