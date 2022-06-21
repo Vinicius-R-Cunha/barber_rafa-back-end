@@ -4,23 +4,23 @@ import { db } from "../../src/database.js";
 type MissingDataCategory = "title";
 
 export function categoryBody(missing?: MissingDataCategory) {
-    const title = faker.internet.password();
+  const title = faker.internet.password();
 
-    if (missing === "title") {
-        return {};
-    } else {
-        return {
-            title,
-        };
-    }
+  if (missing === "title") {
+    return {};
+  } else {
+    return {
+      title,
+    };
+  }
 }
 
 export async function insertCategory() {
-    const body = categoryBody();
+  const body = categoryBody();
 
-    await db
-        .collection("categories")
-        .insertOne({ title: body.title, services: [] });
+  await db
+    .collection("categories")
+    .insertOne({ title: body.title, services: [] });
 
-    return body;
+  return body;
 }

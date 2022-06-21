@@ -1,13 +1,13 @@
 {
-    "compilerOptions": {
-        "types": ["jest"],
-        "esModuleInterop": true,
-        "module": "es2022",
-        "moduleResolution": "node",
-        "outDir": "dist",
-        "target": "es2022"
-    },
-    "ts-node": {
-        "esm": true
-    }
+  "compilerOptions": {
+    "types": ["jest"],
+    "esModuleInterop": true,
+    "module": "es2022",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "target": "es2022"
+  },
+  "ts-node": {
+    "esm": true
+  }
 }

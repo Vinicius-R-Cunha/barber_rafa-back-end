@@ -6,10 +6,10 @@ import * as scheduleController from "../controllers/scheduleController.js";
 
 const scheduleRouter = Router();
 scheduleRouter.post(
-    "/schedule/:weekId",
-    validateSchemaMiddleware(checkAvailabilitySchema),
-    validateAdminMiddleware,
-    scheduleController.editSchedule
+  "/schedule/:weekId",
+  validateSchemaMiddleware(checkAvailabilitySchema),
+  validateAdminMiddleware,
+  scheduleController.editSchedule
 );
 
 export default scheduleRouter;

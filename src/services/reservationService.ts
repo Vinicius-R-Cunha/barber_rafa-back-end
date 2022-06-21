@@ -3,13 +3,13 @@ import * as userRepository from "../repositories/userRepository.js";
 import dayjs from "dayjs";
 
 export async function getReservationsByEmail(email: string) {
-    const reservations = await reservationRepository.getByEmail(email);
+  const reservations = await reservationRepository.getByEmail(email);
 
-    return getRecentReservations(reservations);
+  return getRecentReservations(reservations);
 }
 
 function getRecentReservations(reservations: any[]) {
-    const today = dayjs();
+  const today = dayjs();
 
-    return reservations.filter((value) => dayjs(value.endTime).isAfter(today));
+  return reservations.filter((value) => dayjs(value.endTime).isAfter(today));
 }

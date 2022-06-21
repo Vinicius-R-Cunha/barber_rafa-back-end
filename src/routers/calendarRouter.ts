@@ -8,23 +8,23 @@ import checkAvailabilitySchema from "../schemas/checkAvailabilitySchema.js";
 const calendarRouter = Router();
 
 calendarRouter.post(
-    "/calendar/create-event",
-    validateSchemaMiddleware(calendarSchema),
-    validateTokenMiddleware,
-    calendarController.createEvent
+  "/calendar/create-event",
+  validateSchemaMiddleware(calendarSchema),
+  validateTokenMiddleware,
+  calendarController.createEvent
 );
 
 calendarRouter.delete(
-    "/calendar/:eventId",
-    validateTokenMiddleware,
-    calendarController.deleteEvent
+  "/calendar/:eventId",
+  validateTokenMiddleware,
+  calendarController.deleteEvent
 );
 
 calendarRouter.post(
-    "/calendar/check-availability",
-    validateSchemaMiddleware(checkAvailabilitySchema),
-    validateTokenMiddleware,
-    calendarController.checkAvailability
+  "/calendar/check-availability",
+  validateSchemaMiddleware(checkAvailabilitySchema),
+  validateTokenMiddleware,
+  calendarController.checkAvailability
 );
 
 export default calendarRouter;
