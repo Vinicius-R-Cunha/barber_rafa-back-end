@@ -30,6 +30,7 @@ MONGO_URI=mongodb://localhost/:27017/
 CLIENT_ID=get this from your Google Oauth Credentials
 CLIENT_SECRET=get this from your Google Oauth Credentials
 REFRESH_TOKEN=get this from your Google Oauth Credentials
+PORT=optional
 ```
 
 ### Run the back-end with
