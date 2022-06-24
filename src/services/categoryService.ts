@@ -1,5 +1,6 @@
 import * as categoryRepository from "../repositories/categoryRepository.js";
 import { stripHtml } from "string-strip-html";
+import { ObjectId } from "mongodb";
 
 export interface CategoryData {
   title: string;
@@ -8,35 +9,28 @@ export interface CategoryData {
 export async function create(title: string) {
   const titleStrip = stripHtml(title).result.trim();
 
-  if (await categoryExists(titleStrip)) {
-    throw {
-      type: "conflict",
-      message: "there is a category with this name already",
-    };
-  }
-
-  await categoryRepository.insert(title);
+  await categoryRepository.insert(titleStrip);
 }
 
 export async function get() {
   return await categoryRepository.getAll();
 }
 
-export async function deleteEmpty(title: string) {
-  if (!(await categoryIsEmpty(title))) {
+export async function deleteEmpty(categoryId: ObjectId) {
+  if (!(await categoryIsEmpty(categoryId))) {
     throw {
       type: "bad_request",
       message: "can't delete a category that have services",
     };
   }
 
-  await categoryRepository.remove(title);
+  await categoryRepository.remove(categoryId);
 }
 
-async function categoryIsEmpty(title: string) {
-  const category = await categoryRepository.getByTitle(title);
+async function categoryIsEmpty(categoryId: ObjectId) {
+  const category = await categoryRepository.getById(categoryId);
 
-  if (!(await categoryExists(title))) {
+  if (!category) {
     throw {
       type: "not_found",
       message: "category not found",
@@ -46,27 +40,20 @@ async function categoryIsEmpty(title: string) {
   return category?.services.length === 0;
 }
 
-export async function edit(categoryTitle: string, title: string) {
-  const oldTitle = stripHtml(categoryTitle).result.trim();
-  const newTitle = stripHtml(title).result.trim();
-
-  if (!(await categoryExists(oldTitle))) {
+export async function edit(categoryId: ObjectId, title: string) {
+  if (!(await categoryExists(categoryId))) {
     throw {
       type: "not_found",
       message: "category not found",
     };
   }
 
-  if (await categoryExists(newTitle)) {
-    throw {
-      type: "conflict",
-      message: "there is a category with this name already",
-    };
-  }
+  const { _id } = await categoryRepository.getById(categoryId);
+  const newTitle = stripHtml(title).result.trim();
 
-  await categoryRepository.editTitle(oldTitle, newTitle);
+  await categoryRepository.editTitle(_id, newTitle);
 }
 
-async function categoryExists(title: string) {
-  return await categoryRepository.getByTitle(title);
+async function categoryExists(categoryId: ObjectId) {
+  return await categoryRepository.getById(categoryId);
 }

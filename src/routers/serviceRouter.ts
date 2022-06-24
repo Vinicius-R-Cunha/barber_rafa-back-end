@@ -7,23 +7,23 @@ import serviceSchema from "../schemas/serviceSchema.js";
 const serviceRouter = Router();
 
 serviceRouter.post(
-  "/services/:categoryTitle",
+  "/services/:categoryId",
   validateSchemaMiddleware(serviceSchema),
   validateAdminMiddleware,
   serviceController.create
 );
 
 serviceRouter.put(
-  "/services/:categoryTitle/:serviceName",
+  "/services/:categoryId/:serviceId",
   validateSchemaMiddleware(serviceSchema),
   validateAdminMiddleware,
   serviceController.edit
 );
 
 serviceRouter.delete(
-  "/services/:categoryTitle/:serviceName",
+  "/services/:categoryId/:serviceId",
   validateAdminMiddleware,
-  serviceController.deleteService
+  serviceController.deleteController
 );
 
 export default serviceRouter;

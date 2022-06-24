@@ -18,9 +18,9 @@ export function categoryBody(missing?: MissingDataCategory) {
 export async function insertCategory() {
   const body = categoryBody();
 
-  await db
+  const category = await db
     .collection("categories")
     .insertOne({ title: body.title, services: [] });
 
-  return body;
+  return category;
 }

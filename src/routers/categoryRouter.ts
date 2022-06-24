@@ -16,13 +16,13 @@ categoryRouter.post(
 categoryRouter.get("/categories", categoryController.get);
 
 categoryRouter.delete(
-  "/categories/:categoryTitle",
+  "/categories/:categoryId",
   validateAdminMiddleware,
   categoryController.deleteEmpty
 );
 
 categoryRouter.put(
-  "/categories/:categoryTitle",
+  "/categories/:categoryId",
   validateSchemaMiddleware(categorySchema),
   validateAdminMiddleware,
   categoryController.edit

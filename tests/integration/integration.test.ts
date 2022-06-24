@@ -6,6 +6,7 @@ import * as signInFactory from "../factories/signInFactory.js";
 import * as categoryFactory from "../factories/categoryFactory.js";
 import * as serviceFactory from "../factories/serviceFactory.js";
 import jwt from "jsonwebtoken";
+import { ObjectId } from "mongodb";
 
 describe("POST /sign-up", () => {
   beforeEach(truncate);
@@ -227,18 +228,6 @@ describe("POST /categories", () => {
 
     expect(result.status).toBe(422);
   });
-
-  it("should return 409 given a already existent title", async () => {
-    const body = await categoryFactory.insertCategory();
-    const token = await signInFactory.generateAdminToken();
-
-    const result = await supertest(app)
-      .post("/categories")
-      .send(body)
-      .set("Authorization", `Bearer ${token}`);
-
-    expect(result.status).toBe(409);
-  });
 });
 
 describe("GET /categories", () => {
@@ -264,22 +253,26 @@ describe("GET /categories", () => {
   });
 });
 
-describe("DELETE /categories/categoryTitle", () => {
+describe("DELETE /categories/categoryId", () => {
   beforeAll(connect);
   beforeEach(truncate);
   afterAll(disconnect);
 
   it("should return 200 and delete the category from db", async () => {
-    const { title } = await categoryFactory.insertCategory();
+    const { insertedId } = await categoryFactory.insertCategory();
     const token = await signInFactory.generateAdminToken();
 
-    const categoryBefore = await db.collection("categories").findOne({ title });
+    const categoryBefore = await db
+      .collection("categories")
+      .findOne({ _id: insertedId });
 
     const result = await supertest(app)
-      .delete(`/categories/${title}`)
+      .delete(`/categories/${insertedId}`)
       .set("Authorization", `Bearer ${token}`);
 
-    const categoryAfter = await db.collection("categories").findOne({ title });
+    const categoryAfter = await db
+      .collection("categories")
+      .findOne({ _id: insertedId });
 
     expect(result.status).toBe(200);
     expect(categoryBefore).toBeTruthy();
@@ -287,54 +280,56 @@ describe("DELETE /categories/categoryTitle", () => {
   });
 
   it("should return 401 given token that is not from admin", async () => {
-    const { title } = await categoryFactory.insertCategory();
+    const { insertedId } = await categoryFactory.insertCategory();
     const token = await signInFactory.generateValidToken();
 
     const result = await supertest(app)
-      .delete(`/categories/${title}`)
+      .delete(`/categories/${insertedId}`)
       .set("Authorization", `Bearer ${token}`);
 
     expect(result.status).toBe(401);
   });
 
   it("should return 404 if category does not exists", async () => {
-    const title = "some category";
+    const id = new ObjectId();
     const token = await signInFactory.generateAdminToken();
 
     const result = await supertest(app)
-      .delete(`/categories/${title}`)
+      .delete(`/categories/${id}`)
       .set("Authorization", `Bearer ${token}`);
 
     expect(result.status).toBe(404);
   });
 
   it("should return 422 if category exists but is not empty", async () => {
-    const { title } = await categoryFactory.insertCategory();
-    await serviceFactory.insertService(title);
+    const { insertedId } = await categoryFactory.insertCategory();
+    await serviceFactory.insertService(insertedId);
     const token = await signInFactory.generateAdminToken();
 
     const result = await supertest(app)
-      .delete(`/categories/${title}`)
+      .delete(`/categories/${insertedId}`)
       .set("Authorization", `Bearer ${token}`);
 
     expect(result.status).toBe(422);
   });
 });
 
-describe("PUT /categories/categoryTitle", () => {
+describe("PUT /categories/categoryId", () => {
   beforeAll(connect);
   beforeEach(truncate);
   afterAll(disconnect);
 
   it("should return 200 and edit the category inside the db", async () => {
-    const { title } = await categoryFactory.insertCategory();
+    const { insertedId } = await categoryFactory.insertCategory();
     const body = categoryFactory.categoryBody();
     const token = await signInFactory.generateAdminToken();
 
-    const categoryBefore = await db.collection("categories").findOne({ title });
+    const categoryBefore = await db
+      .collection("categories")
+      .findOne({ _id: insertedId });
 
     const result = await supertest(app)
-      .put(`/categories/${title}`)
+      .put(`/categories/${insertedId}`)
       .send(body)
       .set("Authorization", `Bearer ${token}`);
 
@@ -347,12 +342,12 @@ describe("PUT /categories/categoryTitle", () => {
   });
 
   it("should return 401 given a token that is not admin", async () => {
-    const { title } = await categoryFactory.insertCategory();
+    const { insertedId } = await categoryFactory.insertCategory();
     const body = categoryFactory.categoryBody();
     const token = await signInFactory.generateValidToken();
 
     const result = await supertest(app)
-      .put(`/categories/${title}`)
+      .put(`/categories/${insertedId}`)
       .send(body)
       .set("Authorization", `Bearer ${token}`);
 
@@ -360,12 +355,12 @@ describe("PUT /categories/categoryTitle", () => {
   });
 
   it("should return 422 given a invalid body", async () => {
-    const { title } = await categoryFactory.insertCategory();
+    const { insertedId } = await categoryFactory.insertCategory();
     const body = categoryFactory.categoryBody("title");
     const token = await signInFactory.generateAdminToken();
 
     const result = await supertest(app)
-      .put(`/categories/${title}`)
+      .put(`/categories/${insertedId}`)
       .send(body)
       .set("Authorization", `Bearer ${token}`);
 
@@ -373,49 +368,41 @@ describe("PUT /categories/categoryTitle", () => {
   });
 
   it("should return 404 given a category that does not exists", async () => {
-    const title = "some category";
+    const id = new ObjectId();
     const body = categoryFactory.categoryBody();
     const token = await signInFactory.generateAdminToken();
 
     const result = await supertest(app)
-      .put(`/categories/${title}`)
+      .put(`/categories/${id}`)
       .send(body)
       .set("Authorization", `Bearer ${token}`);
 
     expect(result.status).toBe(404);
   });
-
-  it("should return 409 given a body with existent title", async () => {
-    const { title } = await categoryFactory.insertCategory();
-    const token = await signInFactory.generateAdminToken();
-
-    const result = await supertest(app)
-      .put(`/categories/${title}`)
-      .send({ title })
-      .set("Authorization", `Bearer ${token}`);
-
-    expect(result.status).toBe(409);
-  });
 });
 
-describe("POST /services/categoryTitle", () => {
+describe("POST /services/categoryId", () => {
   beforeAll(connect);
   beforeEach(truncate);
   afterAll(disconnect);
 
   it("should return 201 given a valid body and send to db", async () => {
-    const { title } = await categoryFactory.insertCategory();
+    const { insertedId } = await categoryFactory.insertCategory();
     const body = serviceFactory.serviceBody();
     const token = await signInFactory.generateAdminToken();
 
-    const categoryBefore = await db.collection("categories").findOne({ title });
+    const categoryBefore = await db
+      .collection("categories")
+      .findOne({ _id: insertedId });
 
     const result = await supertest(app)
-      .post(`/services/${title}`)
+      .post(`/services/${insertedId}`)
       .send(body)
       .set("Authorization", `Bearer ${token}`);
 
-    const categoryAfter = await db.collection("categories").findOne({ title });
+    const categoryAfter = await db
+      .collection("categories")
+      .findOne({ _id: insertedId });
 
     expect(result.status).toBe(201);
     expect(categoryAfter.services).toHaveLength(
@@ -424,12 +411,12 @@ describe("POST /services/categoryTitle", () => {
   });
 
   it("should return 401 given a token that is not admin", async () => {
-    const { title } = await categoryFactory.insertCategory();
+    const { insertedId } = await categoryFactory.insertCategory();
     const body = serviceFactory.serviceBody();
     const token = await signInFactory.generateValidToken();
 
     const result = await supertest(app)
-      .post(`/services/${title}`)
+      .post(`/services/${insertedId}`)
       .send(body)
       .set("Authorization", `Bearer ${token}`);
 
@@ -437,12 +424,12 @@ describe("POST /services/categoryTitle", () => {
   });
 
   it("should return 422 given body without name", async () => {
-    const { title } = await categoryFactory.insertCategory();
+    const { insertedId } = await categoryFactory.insertCategory();
     const body = serviceFactory.serviceBody("name");
     const token = await signInFactory.generateAdminToken();
 
     const result = await supertest(app)
-      .post(`/services/${title}`)
+      .post(`/services/${insertedId}`)
       .send(body)
       .set("Authorization", `Bearer ${token}`);
 
@@ -450,12 +437,12 @@ describe("POST /services/categoryTitle", () => {
   });
 
   it("should return 422 given body without price", async () => {
-    const { title } = await categoryFactory.insertCategory();
+    const { insertedId } = await categoryFactory.insertCategory();
     const body = serviceFactory.serviceBody("price");
     const token = await signInFactory.generateAdminToken();
 
     const result = await supertest(app)
-      .post(`/services/${title}`)
+      .post(`/services/${insertedId}`)
       .send(body)
       .set("Authorization", `Bearer ${token}`);
 
@@ -463,12 +450,12 @@ describe("POST /services/categoryTitle", () => {
   });
 
   it("should return 422 given body without duration", async () => {
-    const { title } = await categoryFactory.insertCategory();
+    const { insertedId } = await categoryFactory.insertCategory();
     const body = serviceFactory.serviceBody("duration");
     const token = await signInFactory.generateAdminToken();
 
     const result = await supertest(app)
-      .post(`/services/${title}`)
+      .post(`/services/${insertedId}`)
       .send(body)
       .set("Authorization", `Bearer ${token}`);
 
@@ -476,12 +463,12 @@ describe("POST /services/categoryTitle", () => {
   });
 
   it("should return 422 given body without description", async () => {
-    const { title } = await categoryFactory.insertCategory();
+    const { insertedId } = await categoryFactory.insertCategory();
     const body = serviceFactory.serviceBody("description");
     const token = await signInFactory.generateAdminToken();
 
     const result = await supertest(app)
-      .post(`/services/${title}`)
+      .post(`/services/${insertedId}`)
       .send(body)
       .set("Authorization", `Bearer ${token}`);
 
@@ -489,53 +476,44 @@ describe("POST /services/categoryTitle", () => {
   });
 
   it("should return 404 given a non-existent category", async () => {
-    const title = "some title";
+    const id = new ObjectId();
     const body = serviceFactory.serviceBody();
     const token = await signInFactory.generateAdminToken();
 
     const result = await supertest(app)
-      .post(`/services/${title}`)
+      .post(`/services/${id}`)
       .send(body)
       .set("Authorization", `Bearer ${token}`);
 
     expect(result.status).toBe(404);
   });
-
-  it("should return 409 given a existent service with that name", async () => {
-    const { title } = await categoryFactory.insertCategory();
-    const body = await serviceFactory.insertService(title);
-    const token = await signInFactory.generateAdminToken();
-
-    const result = await supertest(app)
-      .post(`/services/${title}`)
-      .send(body)
-      .set("Authorization", `Bearer ${token}`);
-
-    expect(result.status).toBe(409);
-  });
 });
 
-describe("PUT /services/categoryTitle/serviceName", () => {
+describe("PUT /services/categoryId/serviceId", () => {
   beforeAll(connect);
   beforeEach(truncate);
   afterAll(disconnect);
 
   it("should return 200 and edit the selected service inside db", async () => {
-    const { title } = await categoryFactory.insertCategory();
-    const body = await serviceFactory.insertService(title);
+    const { insertedId: categoryId } = await categoryFactory.insertCategory();
+    const { serviceId } = await serviceFactory.insertService(categoryId);
     const token = await signInFactory.generateAdminToken();
 
-    const categoryBefore = await db.collection("categories").findOne({ title });
+    const categoryBefore = await db
+      .collection("categories")
+      .findOne({ _id: categoryId });
 
     const serviceBefore = categoryBefore.services[0];
 
     const newBody = serviceFactory.serviceBody();
     const result = await supertest(app)
-      .put(`/services/${title}/${body.name}`)
+      .put(`/services/${categoryId}/${serviceId}`)
       .send(newBody)
       .set("Authorization", `Bearer ${token}`);
 
-    const categoryAfter = await db.collection("categories").findOne({ title });
+    const categoryAfter = await db
+      .collection("categories")
+      .findOne({ _id: categoryId });
 
     const serviceAfter = categoryAfter.services[0];
 
@@ -550,13 +528,13 @@ describe("PUT /services/categoryTitle/serviceName", () => {
   });
 
   it("should return 401 given a token that is not admin", async () => {
-    const { title } = await categoryFactory.insertCategory();
-    const body = await serviceFactory.insertService(title);
+    const { insertedId: categoryId } = await categoryFactory.insertCategory();
+    const { serviceId } = await serviceFactory.insertService(categoryId);
     const token = await signInFactory.generateValidToken();
 
     const newBody = serviceFactory.serviceBody();
     const result = await supertest(app)
-      .put(`/services/${title}/${body.name}`)
+      .put(`/services/${categoryId}/${serviceId}`)
       .send(newBody)
       .set("Authorization", `Bearer ${token}`);
 
@@ -564,13 +542,13 @@ describe("PUT /services/categoryTitle/serviceName", () => {
   });
 
   it("should return 404 given a category that does not exists", async () => {
-    const { title } = await categoryFactory.insertCategory();
-    const body = await serviceFactory.insertService(title);
+    const { insertedId: categoryId } = await categoryFactory.insertCategory();
+    const { body, serviceId } = await serviceFactory.insertService(categoryId);
     const token = await signInFactory.generateAdminToken();
-    const fakeTitle = "some category";
+    const fakeCategoryId = new ObjectId();
 
     const result = await supertest(app)
-      .put(`/services/${fakeTitle}/${body.name}`)
+      .put(`/services/${fakeCategoryId}/${serviceId}`)
       .send(body)
       .set("Authorization", `Bearer ${token}`);
 
@@ -578,31 +556,17 @@ describe("PUT /services/categoryTitle/serviceName", () => {
   });
 
   it("should return 404 given a service that does not exists", async () => {
-    const { title } = await categoryFactory.insertCategory();
-    const service = "some service";
-    const body = serviceFactory.serviceBody();
+    const { insertedId: categoryId } = await categoryFactory.insertCategory();
     const token = await signInFactory.generateAdminToken();
+    const fakeServiceId = new ObjectId();
 
+    const newBody = serviceFactory.serviceBody();
     const result = await supertest(app)
-      .put(`/services/${title}/${service}`)
-      .send(body)
-      .set("Authorization", `Bearer ${token}`);
-
-    expect(result.status).toBe(404);
-  });
-
-  it("should return 409 given a 'new' service name that already exists", async () => {
-    const { title } = await categoryFactory.insertCategory();
-    const body = await serviceFactory.insertService(title);
-    const token = await signInFactory.generateAdminToken();
-
-    const newBody = await serviceFactory.insertService(title);
-    const result = await supertest(app)
-      .put(`/services/${title}/${body.name}`)
+      .put(`/services/${categoryId}/${fakeServiceId}`)
       .send(newBody)
       .set("Authorization", `Bearer ${token}`);
 
-    expect(result.status).toBe(409);
+    expect(result.status).toBe(404);
   });
 });
 
@@ -612,23 +576,26 @@ describe("DELETE /services/categoryTitle/serviceName", () => {
   afterAll(disconnect);
 
   it("should return 200 and remove the service from the array", async () => {
-    const { title } = await categoryFactory.insertCategory();
+    const { insertedId: categoryId } = await categoryFactory.insertCategory();
     const serviceQuantity = 3;
 
     for (let i = 0; i < serviceQuantity - 1; i++) {
-      await serviceFactory.insertService(title);
+      await serviceFactory.insertService(categoryId);
     }
-    const body = await serviceFactory.insertService(title);
-
+    const { serviceId } = await serviceFactory.insertService(categoryId);
     const token = await signInFactory.generateAdminToken();
 
-    const categoryBefore = await db.collection("categories").findOne({ title });
+    const categoryBefore = await db
+      .collection("categories")
+      .findOne({ _id: categoryId });
 
     const result = await supertest(app)
-      .delete(`/services/${title}/${body.name}`)
+      .delete(`/services/${categoryId}/${serviceId}`)
       .set("Authorization", `Bearer ${token}`);
 
-    const categoryAfter = await db.collection("categories").findOne({ title });
+    const categoryAfter = await db
+      .collection("categories")
+      .findOne({ _id: categoryId });
 
     expect(result.status).toBe(200);
     expect(categoryAfter.services).toHaveLength(
@@ -637,44 +604,44 @@ describe("DELETE /services/categoryTitle/serviceName", () => {
   });
 
   it("should return 401 given a token that is not admin", async () => {
-    const { title } = await categoryFactory.insertCategory();
+    const { insertedId: categoryId } = await categoryFactory.insertCategory();
     const serviceQuantity = 3;
 
     for (let i = 0; i < serviceQuantity - 1; i++) {
-      await serviceFactory.insertService(title);
+      await serviceFactory.insertService(categoryId);
     }
-    const body = await serviceFactory.insertService(title);
+    const { serviceId } = await serviceFactory.insertService(categoryId);
 
     const token = await signInFactory.generateValidToken();
 
     const result = await supertest(app)
-      .delete(`/services/${title}/${body.name}`)
+      .delete(`/services/${categoryId}/${serviceId}`)
       .set("Authorization", `Bearer ${token}`);
 
     expect(result.status).toBe(401);
   });
 
   it("should return 404 given a non-existent category", async () => {
-    const { title } = await categoryFactory.insertCategory();
-    const body = await serviceFactory.insertService(title);
+    const { insertedId: categoryId } = await categoryFactory.insertCategory();
+    const { serviceId } = await serviceFactory.insertService(categoryId);
     const token = await signInFactory.generateAdminToken();
-    const fakeTitle = "some title";
+    const fakeCategoryId = new ObjectId();
 
     const result = await supertest(app)
-      .delete(`/services/${fakeTitle}/${body.name}`)
+      .delete(`/services/${fakeCategoryId}/${serviceId}`)
       .set("Authorization", `Bearer ${token}`);
 
     expect(result.status).toBe(404);
   });
 
   it("should return 404 given a non-existent service", async () => {
-    const { title } = await categoryFactory.insertCategory();
-    await serviceFactory.insertService(title);
+    const { insertedId: categoryId } = await categoryFactory.insertCategory();
+    await serviceFactory.insertService(categoryId);
     const token = await signInFactory.generateAdminToken();
-    const fakeService = "some service";
+    const fakeServiceId = new ObjectId();
 
     const result = await supertest(app)
-      .delete(`/services/${title}/${fakeService}`)
+      .delete(`/services/${categoryId}/${fakeServiceId}`)
       .set("Authorization", `Bearer ${token}`);
 
     expect(result.status).toBe(404);

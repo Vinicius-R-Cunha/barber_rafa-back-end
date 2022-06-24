@@ -1,95 +1,81 @@
 import * as categoryRepository from "../repositories/categoryRepository.js";
 import * as serviceRepository from "../repositories/serviceRepository.js";
 import { stripHtml } from "string-strip-html";
+import { ObjectId } from "mongodb";
 
 export interface ServiceData {
   name: string;
-  price: number;
+  price: string;
   duration: string;
   description: string;
 }
 
-export async function create(body: ServiceData, categoryTitle: string) {
+export async function create(body: ServiceData, categoryId: ObjectId) {
   const bodyStrip = {
-    name: stripHtml(body.name).result.trim(),
-    price: body.price,
-    duration: stripHtml(body.duration).result.trim(),
-    description: stripHtml(body.description).result.trim(),
+    name: strip(body.name),
+    price: strip(body.price),
+    duration: strip(body.duration),
+    description: strip(body.description),
   };
 
-  if (await serviceExists(categoryTitle, bodyStrip.name))
-    throw {
-      type: "conflict",
-      message: "there is a service with this name already",
-    };
+  await validateCategory(categoryId);
 
-  await serviceRepository.createNewService(bodyStrip, categoryTitle);
+  await serviceRepository.createNewService(bodyStrip, categoryId);
 }
 
 export async function edit(
-  oldServiceName: string,
+  categoryId: ObjectId,
   body: ServiceData,
-  categoryTitle: string
+  serviceId: ObjectId
 ) {
   const bodyStrip = {
-    name: stripHtml(body.name).result.trim(),
-    price: body.price,
-    duration: stripHtml(body.duration).result.trim(),
-    description: stripHtml(body.description).result.trim(),
+    name: strip(body.name),
+    price: strip(body.price),
+    duration: strip(body.duration),
+    description: strip(body.description),
   };
 
-  const oldServiceNameStrip = stripHtml(oldServiceName).result.trim();
-  const categoryTitleStrip = stripHtml(categoryTitle).result.trim();
+  const categoryIdStrip = new ObjectId(strip(categoryId.toString()));
+  const serviceIdStrip = new ObjectId(strip(serviceId.toString()));
 
-  if (!(await serviceExists(categoryTitleStrip, oldServiceNameStrip)))
+  if (!(await serviceExists(categoryIdStrip, serviceIdStrip)))
     throw { type: "not_found", message: "service not found" };
 
-  if (
-    await serviceExists(categoryTitleStrip, bodyStrip.name, oldServiceNameStrip)
-  )
-    throw {
-      type: "conflict",
-      message: "there is a service with this name already",
-    };
-
   await serviceRepository.editService(
-    oldServiceNameStrip,
-    bodyStrip,
-    categoryTitleStrip
+    categoryIdStrip,
+    serviceIdStrip,
+    bodyStrip
   );
 }
 
-export async function deleteService(
-  categoryTitle: string,
-  serviceName: string
-) {
-  if (!(await serviceExists(categoryTitle, serviceName)))
+export async function deleteService(categoryId: ObjectId, serviceId: ObjectId) {
+  if (!(await serviceExists(categoryId, serviceId)))
     throw { type: "not_found", message: "service not found" };
 
-  await serviceRepository.deleteService(categoryTitle, serviceName);
+  await serviceRepository.deleteService(categoryId, serviceId);
 }
 
-async function validateCategory(categoryTitle: string) {
-  const category = await categoryRepository.getByTitle(categoryTitle);
+async function validateCategory(categoryId: ObjectId) {
+  const category = await categoryRepository.getById(categoryId);
 
   if (!category) throw { type: "not_found", message: "category not found" };
 
   return category;
 }
 
-async function serviceExists(
-  categoryTitle: string,
-  serviceName: string,
-  oldServiceName?: string
-) {
-  const category = await validateCategory(categoryTitle);
+async function serviceExists(categoryId: ObjectId, serviceId: ObjectId) {
+  const category = await validateCategory(categoryId);
+
   let serviceExists = false;
   for (let i = 0; i < category?.services?.length; i++) {
-    if (category?.services[i]?.name === oldServiceName) continue;
-    if (category?.services[i]?.name === serviceName) {
+    if (new ObjectId(serviceId).equals(category?.services[i]?._id)) {
       serviceExists = true;
     }
   }
 
   return serviceExists;
+}
+
+function strip(string: string) {
+  return stripHtml(string).result.trim();
 }

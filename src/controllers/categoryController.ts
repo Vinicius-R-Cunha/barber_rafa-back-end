@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { ObjectId } from "mongodb";
 import * as categoryService from "../services/categoryService.js";
 
 export async function create(req: Request, res: Response) {
@@ -16,18 +17,23 @@ export async function get(req: Request, res: Response) {
 }
 
 export async function deleteEmpty(req: Request, res: Response) {
-  const { categoryTitle } = req.params;
+  const { categoryId } = req.params;
 
-  const categories = await categoryService.deleteEmpty(categoryTitle);
+  const categories = await categoryService.deleteEmpty(
+    new ObjectId(categoryId)
+  );
 
   return res.status(200).send(categories);
 }
 
 export async function edit(req: Request, res: Response) {
-  const { categoryTitle } = req.params;
+  const { categoryId } = req.params;
   const { title } = req.body;
 
-  const categories = await categoryService.edit(categoryTitle, title);
+  const categories = await categoryService.edit(
+    new ObjectId(categoryId),
+    title
+  );
 
   return res.status(200).send(categories);
 }

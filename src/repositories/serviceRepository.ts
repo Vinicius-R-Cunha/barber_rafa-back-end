@@ -2,10 +2,13 @@ import { ObjectId } from "mongodb";
 import { db } from "../database.js";
 import { ServiceData } from "../services/serviceService.js";
 
-export async function createNewService(body: ServiceData, title: string) {
+export async function createNewService(
+  body: ServiceData,
+  categoryId: ObjectId
+) {
   return await db.collection("categories").updateOne(
     {
-      title,
+      _id: categoryId,
     },
     {
       $push: { services: { _id: new ObjectId(), ...body } },
@@ -14,14 +17,14 @@ export async function createNewService(body: ServiceData, title: string) {
 }
 
 export async function editService(
-  oldServiceName: string,
-  body: ServiceData,
-  title: string
+  categoryId: ObjectId,
+  serviceId: ObjectId,
+  body: ServiceData
 ) {
   return await db.collection("categories").updateOne(
     {
-      title,
-      "services.name": oldServiceName,
+      _id: categoryId,
+      "services._id": serviceId,
     },
     {
       $set: {
@@ -34,13 +37,13 @@ export async function editService(
   );
 }
 
-export async function deleteService(title: string, name: string) {
+export async function deleteService(categoryId: ObjectId, serviceId: ObjectId) {
   return await db.collection("categories").updateOne(
     {
-      title,
+      _id: categoryId,
     },
     {
-      $pull: { services: { name } },
+      $pull: { services: { _id: serviceId } },
     }
   );
 }

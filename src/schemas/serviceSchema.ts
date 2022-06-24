@@ -3,7 +3,7 @@ import { ServiceData } from "../services/serviceService";
 
 const serviceSchema = Joi.object<ServiceData>({
   name: Joi.string().required(),
-  price: Joi.number().required(),
+  price: Joi.string().required(),
   duration: Joi.string().required(),
   description: Joi.string().allow("").required(),
 });

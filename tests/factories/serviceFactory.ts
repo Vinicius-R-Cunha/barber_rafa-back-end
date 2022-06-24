@@ -44,17 +44,18 @@ export function serviceBody(missing?: MissingDataService) {
   }
 }
 
-export async function insertService(title: string) {
+export async function insertService(categoryId: string | ObjectId) {
   const body = serviceBody();
+  const serviceId = new ObjectId();
 
   await db.collection("categories").updateOne(
     {
-      title,
+      _id: new ObjectId(categoryId),
     },
     {
-      $push: { services: { _id: new ObjectId(), ...body } },
+      $push: { services: { _id: serviceId, ...body } },
     }
   );
 
-  return body;
+  return { body, serviceId };
 }
