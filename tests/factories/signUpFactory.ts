@@ -1,11 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-type MissingData =
-  | "name"
-  | "email"
-  | "phone"
-  | "password"
-  | "passwordConfirmation";
+type MissingData = "name" | "email" | "phone" | "password";
 
 export function signUpBody(missing?: MissingData) {
   const name = faker.name.firstName();
@@ -18,35 +13,24 @@ export function signUpBody(missing?: MissingData) {
       email,
       phone,
       password,
-      passwordConfirmation: password,
     };
   } else if (missing === "email") {
     return {
       name,
       phone,
       password,
-      passwordConfirmation: password,
     };
   } else if (missing === "phone") {
     return {
       name,
       email,
       password,
-      passwordConfirmation: password,
     };
   } else if (missing === "password") {
     return {
       name,
       email,
       phone,
-      passwordConfirmation: password,
-    };
-  } else if (missing === "passwordConfirmation") {
-    return {
-      name,
-      email,
-      phone,
-      password,
     };
   } else {
     return {
@@ -54,7 +38,6 @@ export function signUpBody(missing?: MissingData) {
       email,
       phone,
       password,
-      passwordConfirmation: password,
     };
   }
 }

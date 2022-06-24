@@ -6,7 +6,6 @@ const signUpSchema = Joi.object<SignUpData>({
   email: Joi.string().email().required(),
   phone: Joi.string().required(),
   password: Joi.string().required(),
-  passwordConfirmation: Joi.string().required(),
 });
 
 export default signUpSchema;

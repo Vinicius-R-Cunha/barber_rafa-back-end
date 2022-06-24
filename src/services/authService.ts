@@ -26,11 +26,9 @@ export async function signUp(body: SignUpData) {
     email: stripHtml(body.email).result.trim(),
     phone: stripHtml(body.phone).result.trim(),
     password: stripHtml(body.password).result.trim(),
-    passwordConfirmation: stripHtml(body.passwordConfirmation).result.trim(),
   };
-  const { name, email, phone, password, passwordConfirmation } = bodyStrip;
+  const { name, email, phone, password } = bodyStrip;
 
-  checkIfPasswordsMatch(password, passwordConfirmation);
   await checkIfEmailExists(email);
   const encryptedPassword = encryptPassword(password);
 
@@ -52,13 +50,6 @@ export async function signIn(body: SignInData) {
     email: user.email,
     phone: user.phone,
   });
-}
-
-function checkIfPasswordsMatch(password: string, passwordConfirmation: string) {
-  if (password !== passwordConfirmation) {
-    throw { type: "conflict", message: "As senhas não batem" };
-  }
-  return;
 }
 
 async function checkIfEmailExists(email: string) {

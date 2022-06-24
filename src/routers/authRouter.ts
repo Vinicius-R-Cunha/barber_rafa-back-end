@@ -12,6 +12,7 @@ authRouter.post(
   validateSchemaMiddleware(signUpSchema),
   authController.signUp
 );
+
 authRouter.post(
   "/sign-in",
   validateSchemaMiddleware(signInSchema),

@@ -56,30 +56,12 @@ describe("POST /sign-up", () => {
     expect(result.status).toBe(422);
   });
 
-  it("should return 422 given body missing passwordConfirmation", async () => {
-    const body = signUpFactory.signUpBody("passwordConfirmation");
-
-    const result = await supertest(app).post("/sign-up").send(body);
-
-    expect(result.status).toBe(422);
-  });
-
   it("should return 409 given body with email already existent", async () => {
     const body = signUpFactory.signUpBody();
 
     await db.collection("users").insertOne({ ...body });
 
     const result = await supertest(app).post("/sign-up").send(body);
-
-    expect(result.status).toBe(409);
-  });
-
-  it("should return 409 given body with passwords mismatching", async () => {
-    const body = signUpFactory.signUpBody();
-
-    const result = await supertest(app)
-      .post("/sign-up")
-      .send({ ...body, passwordConfirmation: "senhaimpossivel" });
 
     expect(result.status).toBe(409);
   });
