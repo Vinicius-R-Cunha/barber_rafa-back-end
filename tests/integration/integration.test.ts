@@ -170,7 +170,7 @@ describe("GET /token/validation", () => {
     expect(validation.status).toBe(401);
   });
 
-  it("should return 422 given a valid token that is not from any user", async () => {
+  it("should return 400 given a valid token that is not from any user", async () => {
     const token =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Im5hbWUiOiJKb2huIERvZSJ9fQ.xY01AjfmxskAvfrpMkXp8uw0XqlANlxC46bk22m_Hvk";
 
@@ -178,7 +178,7 @@ describe("GET /token/validation", () => {
       .post("/token/validation")
       .set("Authorization", `Bearer ${token}`);
 
-    expect(validation.status).toBe(422);
+    expect(validation.status).toBe(400);
   });
 });
 
@@ -301,7 +301,7 @@ describe("DELETE /categories/categoryId", () => {
     expect(result.status).toBe(404);
   });
 
-  it("should return 422 if category exists but is not empty", async () => {
+  it("should return 400 if category exists but is not empty", async () => {
     const { insertedId } = await categoryFactory.insertCategory();
     await serviceFactory.insertService(insertedId);
     const token = await signInFactory.generateAdminToken();
@@ -310,7 +310,7 @@ describe("DELETE /categories/categoryId", () => {
       .delete(`/categories/${insertedId}`)
       .set("Authorization", `Bearer ${token}`);
 
-    expect(result.status).toBe(422);
+    expect(result.status).toBe(400);
   });
 });
 

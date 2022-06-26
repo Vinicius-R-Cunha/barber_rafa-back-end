@@ -12,6 +12,6 @@ export function errorTypeToStatusCode(type: AppErrorTypes) {
   if (type === "unauthorized") return 401;
   if (type === "not_found") return 404;
   if (type === "conflict") return 409;
-  if (type === "bad_request") return 422;
+  if (type === "bad_request") return 400;
   return 400;
 }
