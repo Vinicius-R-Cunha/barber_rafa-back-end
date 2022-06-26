@@ -39,7 +39,7 @@ export async function edit(
   const serviceIdStrip = new ObjectId(strip(serviceId.toString()));
 
   if (!(await serviceExists(categoryIdStrip, serviceIdStrip)))
-    throw { type: "not_found", message: "service not found" };
+    throw { type: "not_found", message: "Serviço não encontrado" };
 
   await serviceRepository.editService(
     categoryIdStrip,
@@ -50,7 +50,7 @@ export async function edit(
 
 export async function deleteService(categoryId: ObjectId, serviceId: ObjectId) {
   if (!(await serviceExists(categoryId, serviceId)))
-    throw { type: "not_found", message: "service not found" };
+    throw { type: "not_found", message: "Serviço não encontrado" };
 
   await serviceRepository.deleteService(categoryId, serviceId);
 }
@@ -58,7 +58,8 @@ export async function deleteService(categoryId: ObjectId, serviceId: ObjectId) {
 async function validateCategory(categoryId: ObjectId) {
   const category = await categoryRepository.getById(categoryId);
 
-  if (!category) throw { type: "not_found", message: "category not found" };
+  if (!category)
+    throw { type: "not_found", message: "Categoria não encontrada" };
 
   return category;
 }

@@ -20,7 +20,7 @@ export async function deleteEmpty(categoryId: ObjectId) {
   if (!(await categoryIsEmpty(categoryId))) {
     throw {
       type: "bad_request",
-      message: "can't delete a category that have services",
+      message: "Apague os serviços dessa categoria para excluir",
     };
   }
 
@@ -33,7 +33,7 @@ async function categoryIsEmpty(categoryId: ObjectId) {
   if (!category) {
     throw {
       type: "not_found",
-      message: "category not found",
+      message: "Categoria não encontrada",
     };
   }
 
@@ -44,7 +44,7 @@ export async function edit(categoryId: ObjectId, title: string) {
   if (!(await categoryExists(categoryId))) {
     throw {
       type: "not_found",
-      message: "category not found",
+      message: "Categoria não encontrada",
     };
   }
 
