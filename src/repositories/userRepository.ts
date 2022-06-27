@@ -14,3 +14,14 @@ export async function createNewUser(
     .collection("users")
     .insertOne({ name, email, phone, password, reservations: [] });
 }
+
+export async function changePassword(email: string, password: string) {
+  return await db.collection("users").updateOne(
+    {
+      email,
+    },
+    {
+      $set: { password },
+    }
+  );
+}

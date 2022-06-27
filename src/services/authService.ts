@@ -8,24 +8,18 @@ export interface SignUpData {
   email: string;
   phone: string;
   password: string;
-  passwordConfirmation: string;
 }
 
-export type SignInData = Omit<
-  SignUpData,
-  "name" | "phone" | "passwordConfirmation"
->;
+export type SignInData = Omit<SignUpData, "name" | "phone">;
 
-export type User = Omit<SignUpData, "passwordConfirmation">;
-
-export type TokenData = Omit<SignUpData, "password" | "passwordConfirmation">;
+export type TokenData = Omit<SignUpData, "password">;
 
 export async function signUp(body: SignUpData) {
   const bodyStrip = {
-    name: stripHtml(body.name).result.trim(),
-    email: stripHtml(body.email).result.trim(),
-    phone: stripHtml(body.phone).result.trim(),
-    password: stripHtml(body.password).result.trim(),
+    name: strip(body.name),
+    email: strip(body.email),
+    phone: strip(body.phone),
+    password: strip(body.password),
   };
   const { name, email, phone, password } = bodyStrip;
 
@@ -39,8 +33,8 @@ export async function signUp(body: SignUpData) {
 
 export async function signIn(body: SignInData) {
   const bodyStrip = {
-    email: stripHtml(body.email).result.trim(),
-    password: stripHtml(body.password).result.trim(),
+    email: strip(body.email),
+    password: strip(body.password),
   };
   const { email, password } = bodyStrip;
 
@@ -91,4 +85,8 @@ function generateToken(data: TokenData) {
       expiresIn: 60 * 24 * 60 * 60,
     }
   );
+}
+
+function strip(string: string) {
+  return stripHtml(string).result.trim();
 }

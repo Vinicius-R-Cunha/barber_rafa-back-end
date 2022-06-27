@@ -7,7 +7,7 @@ export interface CategoryData {
 }
 
 export async function create(title: string) {
-  const titleStrip = stripHtml(title).result.trim();
+  const titleStrip = strip(title);
 
   await categoryRepository.insert(titleStrip);
 }
@@ -49,11 +49,15 @@ export async function edit(categoryId: ObjectId, title: string) {
   }
 
   const { _id } = await categoryRepository.getById(categoryId);
-  const newTitle = stripHtml(title).result.trim();
+  const newTitle = strip(title);
 
   await categoryRepository.editTitle(_id, newTitle);
 }
 
 async function categoryExists(categoryId: ObjectId) {
   return await categoryRepository.getById(categoryId);
+}
+
+function strip(string: string) {
+  return stripHtml(string).result.trim();
 }
