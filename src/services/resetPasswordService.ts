@@ -40,7 +40,10 @@ export async function generateUrl(email: string) {
 
   if (user) {
     await hashRepository.create(hash, email, expireDate);
-    await sendEmail(`http://localhost:3000/${hash}`, stripEmail);
+    await sendEmail(
+      `${process.env.FRONTEND_URL}reset-password/${hash}`,
+      stripEmail
+    );
   }
 
   return;
