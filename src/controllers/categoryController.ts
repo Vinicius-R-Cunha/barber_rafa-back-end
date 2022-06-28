@@ -19,21 +19,16 @@ export async function get(req: Request, res: Response) {
 export async function deleteEmpty(req: Request, res: Response) {
   const { categoryId } = req.params;
 
-  const categories = await categoryService.deleteEmpty(
-    new ObjectId(categoryId)
-  );
+  await categoryService.deleteEmpty(new ObjectId(categoryId));
 
-  return res.status(200).send(categories);
+  return res.sendStatus(200);
 }
 
 export async function edit(req: Request, res: Response) {
   const { categoryId } = req.params;
   const { title } = req.body;
 
-  const categories = await categoryService.edit(
-    new ObjectId(categoryId),
-    title
-  );
+  await categoryService.edit(new ObjectId(categoryId), title);
 
-  return res.status(200).send(categories);
+  return res.sendStatus(200);
 }

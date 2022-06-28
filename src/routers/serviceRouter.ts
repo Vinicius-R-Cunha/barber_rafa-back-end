@@ -23,7 +23,7 @@ serviceRouter.put(
 serviceRouter.delete(
   "/services/:categoryId/:serviceId",
   validateAdminMiddleware,
-  serviceController.deleteController
+  serviceController.deleteService
 );
 
 export default serviceRouter;

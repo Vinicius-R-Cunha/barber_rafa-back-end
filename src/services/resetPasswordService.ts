@@ -79,11 +79,12 @@ async function sendEmail(url: string, email: string) {
     from: EMAIL_SENDER,
     to: email,
     subject: "Redefinição de senha",
-    text: url,
+    text: "Para redefinir sua senha acesse o link: " + url,
   };
 
   transporter.sendMail(options, (err, info) => {
     if (err) return console.log(err);
+
     return;
   });
 }

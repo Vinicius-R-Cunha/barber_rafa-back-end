@@ -12,9 +12,9 @@ export async function resetPassword(req: Request, res: Response) {
 export async function generateUrl(req: Request, res: Response) {
   const { email } = req.params;
 
-  const hash = await resetPasswordService.generateUrl(email);
+  await resetPasswordService.generateUrl(email);
 
-  return res.status(200).send(hash);
+  return res.sendStatus(200);
 }
 
 export async function validateHash(req: Request, res: Response) {

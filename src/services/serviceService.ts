@@ -55,15 +55,6 @@ export async function deleteService(categoryId: ObjectId, serviceId: ObjectId) {
   await serviceRepository.deleteService(categoryId, serviceId);
 }
 
-async function validateCategory(categoryId: ObjectId) {
-  const category = await categoryRepository.getById(categoryId);
-
-  if (!category)
-    throw { type: "not_found", message: "Categoria não encontrada" };
-
-  return category;
-}
-
 async function serviceExists(categoryId: ObjectId, serviceId: ObjectId) {
   const category = await validateCategory(categoryId);
 
@@ -75,6 +66,15 @@ async function serviceExists(categoryId: ObjectId, serviceId: ObjectId) {
   }
 
   return serviceExists;
+}
+
+async function validateCategory(categoryId: ObjectId) {
+  const category = await categoryRepository.getById(categoryId);
+
+  if (!category)
+    throw { type: "not_found", message: "Categoria não encontrada" };
+
+  return category;
 }
 
 function strip(string: string) {

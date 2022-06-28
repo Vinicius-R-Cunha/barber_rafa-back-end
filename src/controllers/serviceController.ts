@@ -22,7 +22,7 @@ export async function edit(req: Request, res: Response) {
   return res.sendStatus(200);
 }
 
-export async function deleteController(req: Request, res: Response) {
+export async function deleteService(req: Request, res: Response) {
   const { categoryId, serviceId } = req.params;
 
   await serviceService.deleteService(

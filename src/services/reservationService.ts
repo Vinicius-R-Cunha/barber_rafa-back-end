@@ -1,5 +1,4 @@
 import * as reservationRepository from "../repositories/reservationRepository.js";
-import * as userRepository from "../repositories/userRepository.js";
 import dayjs from "dayjs";
 
 export async function getReservationsByEmail(email: string) {
