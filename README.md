@@ -24,6 +24,9 @@ npm i
 
 ```bash
 ADMIN_EMAIL=youradminemail@gmail.com
+SEND_MESSAGES_EMAIL=email@gmail.com
+SEND_MESSAGES_APP_PASSWORD=gmail app password
+FRONTEND_URL=http://localhost:3000/
 DATABASE_NAME=barber-rafa
 JWT_SECRET=yourSecretKey
 MONGO_URI=mongodb://localhost/:27017/

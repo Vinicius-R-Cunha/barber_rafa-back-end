@@ -4,6 +4,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import * as scheduleRepository from "../repositories/scheduleRepository.js";
 import * as reservationRepository from "../repositories/reservationRepository.js";
 import dayjs from "dayjs";
+import nodemailer from "nodemailer";
 
 export interface CalendarData {
   summary: string;
@@ -57,6 +58,9 @@ export async function create(body: CalendarData, email: string) {
       body.startTime,
       endTime
     );
+
+    const { day, time } = getDateAndTime(startTime, body.description);
+    await sendEmail(email, day, time);
 
     return;
   } catch (err) {
@@ -133,6 +137,44 @@ function getCalendar() {
     version: "v3",
     auth: oAuth2Client,
   });
+}
+
+async function sendEmail(email: string, day: string, time: string) {
+  const EMAIL_SENDER = process.env.SEND_MESSAGES_EMAIL;
+  const APP_PASSWORD = process.env.SEND_MESSAGES_APP_PASSWORD;
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: EMAIL_SENDER,
+      pass: APP_PASSWORD,
+    },
+  });
+
+  const options = {
+    from: EMAIL_SENDER,
+    to: email,
+    subject: "Barber Rafa Macedo - Agendamento",
+    text: `Seu agendamento com Barber Rafa Macedo foi efetuado com sucesso dia ${day} às ${time}!`,
+  };
+
+  transporter.sendMail(options, (err, info) => {
+    if (err) return console.log(err);
+
+    return;
+  });
+}
+
+function getDateAndTime(date: string, description: string) {
+  const day = dayjs(date).date().toString().padStart(2, "0");
+  const month = dayjs(date).month().toString().padStart(2, "0");
+
+  const time = description
+    .split(", ")
+    .filter((word) => word.includes("horário"))[0]
+    .split(": ")[1];
+
+  return { day: `${day}/${month}`, time };
 }
 
 function showAvailableTimes(
