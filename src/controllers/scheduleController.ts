@@ -8,3 +8,9 @@ export async function editSchedule(req: Request, res: Response) {
 
   res.sendStatus(200);
 }
+
+export async function getSchedules(req: Request, res: Response) {
+  const schedules = await scheduleService.getAll();
+
+  res.status(200).send(schedules);
+}

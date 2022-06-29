@@ -23,6 +23,7 @@ function getTokenData(token: string) {
   let tokenData: jwt.JwtPayload;
   jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
     if (error) {
+      console.log(error);
       throw { type: "unauthorized", message: "Token inválido" };
     }
     tokenData = decoded as jwt.JwtPayload;

@@ -1,10 +1,35 @@
-import { CheckAvailabilityData } from "../services/calendarService.js";
 import * as scheduleRepository from "../repositories/scheduleRepository.js";
 import dayjs from "dayjs";
 
-export async function edit(body: CheckAvailabilityData, weekId: number) {
-  const dayjsStart = dayjs(body.startTime);
-  const dayjsEnd = dayjs(body.endTime);
+export interface ScheduleData {
+  startTime: string;
+  endTime: string;
+  isOpen: boolean;
+}
+
+export async function edit(body: ScheduleData, weekId: number) {
+  if (body.isOpen) {
+    const schedule = createSchedulesArray(body.startTime, body.endTime);
+
+    await scheduleRepository.editByWeekId(weekId, true, schedule);
+    return;
+  }
+
+  await scheduleRepository.editByWeekId(weekId, false, []);
+  return;
+}
+
+export async function getAll() {
+  return await scheduleRepository.getAll();
+}
+
+function stringTimeToDayjs(time: string) {
+  return dayjs(`01/01/2000 ${time}`, "MM/DD/YYYY H:mm");
+}
+
+function createSchedulesArray(startTime: string, endTime: string) {
+  const dayjsStart = stringTimeToDayjs(startTime);
+  const dayjsEnd = stringTimeToDayjs(endTime);
   const arr = [dayjsStart];
 
   while (dayjsEnd.diff(arr[arr.length - 1]) !== 0) {
@@ -12,7 +37,5 @@ export async function edit(body: CheckAvailabilityData, weekId: number) {
     arr.push(lastDate.add(15, "m"));
   }
 
-  const schedule = arr.map((date) => date.format("HH:mm"));
-  await scheduleRepository.editByWeekId(weekId, schedule);
-  return;
+  return arr.map((date) => date.format("HH:mm"));
 }

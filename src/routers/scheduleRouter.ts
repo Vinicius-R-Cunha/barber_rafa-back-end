@@ -1,13 +1,16 @@
 import { Router } from "express";
 import validateAdminMiddleware from "../middlewares/validateAdminMiddleware.js";
 import { validateSchemaMiddleware } from "../middlewares/validateSchemaMiddleware.js";
-import checkAvailabilitySchema from "../schemas/checkAvailabilitySchema.js";
+import scheduleSchema from "../schemas/scheduleSchema.js";
 import * as scheduleController from "../controllers/scheduleController.js";
 
 const scheduleRouter = Router();
+
+scheduleRouter.get("/schedules", scheduleController.getSchedules);
+
 scheduleRouter.post(
   "/schedule/:weekId",
-  validateSchemaMiddleware(checkAvailabilitySchema),
+  validateSchemaMiddleware(scheduleSchema),
   validateAdminMiddleware,
   scheduleController.editSchedule
 );
