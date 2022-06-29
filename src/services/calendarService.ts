@@ -198,13 +198,54 @@ function showAvailableTimes(
     const startTime = dayjs(freeBusy[i].start).format("HH:mm");
 
     if (range === 1) {
-      schedule.splice(schedule.indexOf(startTime) + 1, 0, "1:00");
+      if (schedule.indexOf(startTime) === -1) {
+        schedule.splice(
+          getBiggestCloseStartTime(schedule, freeBusy[i].start),
+          0,
+          "1:00"
+        );
+      } else {
+        schedule.splice(schedule.indexOf(startTime) + 1, 0, "1:00");
+      }
     } else {
-      schedule.splice(schedule.indexOf(startTime) + 1, range - 1);
+      if (schedule.indexOf(startTime) === -1) {
+        schedule.splice(
+          getBiggestCloseStartTime(schedule, freeBusy[i].start),
+          range - 1
+        );
+      } else {
+        schedule.splice(schedule.indexOf(startTime) + 1, range - 1);
+      }
     }
   }
 
   return checkIfDurationFits(schedule, duration, bodyStartTime);
+}
+
+function getBiggestCloseStartTime(schedule: string[], time: Date) {
+  const date = dayjs(time);
+
+  if (date.get("minute") > 0 && date.get("minute") < 15) {
+    const startTime = date.set("minute", 0).add(15, "minute").format("HH:mm");
+    return schedule.indexOf(startTime);
+  }
+
+  if (date.get("minute") > 15 && date.get("minute") < 30) {
+    const startTime = date.set("minute", 0).add(30, "minute").format("HH:mm");
+    return schedule.indexOf(startTime);
+  }
+
+  if (date.get("minute") > 30 && date.get("minute") < 45) {
+    const startTime = date.set("minute", 0).add(45, "minute").format("HH:mm");
+    return schedule.indexOf(startTime);
+  }
+
+  if (date.get("minute") > 45) {
+    const startTime = date.set("minute", 0).add(1, "hour").format("HH:mm");
+    return schedule.indexOf(startTime);
+  }
+
+  return;
 }
 
 function checkIfDurationFits(
