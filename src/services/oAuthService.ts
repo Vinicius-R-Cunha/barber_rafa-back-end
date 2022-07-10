@@ -21,7 +21,8 @@ export async function handleOAuth(body: oAuthData, oAuthType: string) {
   if (oAuthType === "facebook") {
     let token: string;
 
-    const user = await userRepository.findByFacebookId(bodyStrip.id);
+    const user = await userRepository.findByEmail(bodyStrip.email);
+
     if (!user) {
       await userRepository.createNewFacebookUser(
         bodyStrip.id,
@@ -37,6 +38,14 @@ export async function handleOAuth(body: oAuthData, oAuthType: string) {
       });
 
       return { token, newUser: true };
+    }
+
+    if (!user.facebookId) {
+      throw {
+        type: "conflict",
+        message:
+          "Já existe uma conta associada à esse email, tente fazer login normalmente!",
+      };
     }
 
     token = generateToken({

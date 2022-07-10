@@ -2,10 +2,10 @@ import Joi from "joi";
 import { oAuthData } from "../services/oAuthService";
 
 const oAuthSchema = Joi.object<oAuthData>({
-  id: Joi.string().required(),
-  name: Joi.string().required(),
-  email: Joi.string().allow("").required(),
-  phone: Joi.string().allow("").required(),
+  id: Joi.string(),
+  name: Joi.string(),
+  email: Joi.string().allow(""),
+  phone: Joi.string().allow(""),
 });
 
 export default oAuthSchema;

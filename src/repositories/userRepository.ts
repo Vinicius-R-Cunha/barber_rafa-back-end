@@ -15,10 +15,6 @@ export async function createNewFacebookUser(
     .insertOne({ facebookId, name, email, phone, reservations: [] });
 }
 
-export async function findByFacebookId(facebookId: string) {
-  return await db.collection("users").findOne({ facebookId });
-}
-
 export async function createNewUser(
   name: string,
   email: string,
