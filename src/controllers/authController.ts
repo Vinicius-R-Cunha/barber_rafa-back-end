@@ -21,5 +21,14 @@ export async function checkToken(req: Request, res: Response) {
     name: user.name,
     email: user.email,
     phone: user.phone,
+    newUser: user.phone.length < 15,
   });
+}
+
+export async function updateUserPhone(req: Request, res: Response) {
+  const { user } = res.locals;
+
+  const token = await authService.updateUserPhone(user.email, req.body);
+
+  return res.status(200).send(token);
 }

@@ -14,6 +14,8 @@ export type SignInData = Omit<SignUpData, "name" | "phone">;
 
 export type TokenData = Omit<SignUpData, "password">;
 
+export type UpdatePhoneData = Omit<SignUpData, "name" | "email" | "password">;
+
 export async function signUp(body: SignUpData) {
   const bodyStrip = {
     name: strip(body.name),
@@ -39,6 +41,20 @@ export async function signIn(body: SignInData) {
   const { email, password } = bodyStrip;
 
   const user = await validateLogin(email, password);
+  return generateToken({
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+  });
+}
+
+export async function updateUserPhone(email: string, body: UpdatePhoneData) {
+  const bodyStrip = {
+    phone: strip(body.phone),
+  };
+  await userRepository.changePhone(email, bodyStrip.phone);
+
+  const user = await userRepository.findByEmail(email);
   return generateToken({
     name: user.name,
     email: user.email,
