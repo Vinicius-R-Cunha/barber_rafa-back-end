@@ -47,3 +47,25 @@ export async function changePhone(email: string, phone: string) {
     }
   );
 }
+
+export async function changeName(email: string, name: string) {
+  return await db.collection("users").updateOne(
+    {
+      email,
+    },
+    {
+      $set: { name },
+    }
+  );
+}
+
+export async function changeEmail(email: string, newEmail: string) {
+  return await db.collection("users").updateOne(
+    {
+      email,
+    },
+    {
+      $set: { email: newEmail },
+    }
+  );
+}
