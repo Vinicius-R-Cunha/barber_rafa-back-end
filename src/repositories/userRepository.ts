@@ -15,6 +15,17 @@ export async function createNewFacebookUser(
     .insertOne({ facebookId, name, email, phone, reservations: [] });
 }
 
+export async function createNewGoogleUser(
+  googleId: string,
+  name: string,
+  email: string,
+  phone: string
+) {
+  return await db
+    .collection("users")
+    .insertOne({ googleId, name, email, phone, reservations: [] });
+}
+
 export async function createNewUser(
   name: string,
   email: string,
