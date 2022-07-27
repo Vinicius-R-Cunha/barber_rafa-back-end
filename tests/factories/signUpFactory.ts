@@ -5,7 +5,7 @@ type MissingData = "name" | "email" | "phone" | "password";
 export function signUpBody(missing?: MissingData) {
   const name = faker.name.firstName();
   const email = faker.internet.email();
-  const phone = faker.phone.phoneNumber("11 9####-####");
+  const phone = faker.phone.phoneNumber("(11) 9####-####");
   const password = faker.internet.password();
 
   if (missing === "name") {
