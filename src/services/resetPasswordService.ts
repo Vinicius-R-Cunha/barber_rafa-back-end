@@ -39,11 +39,19 @@ export async function generateUrl(email: string) {
   const user = await userRepository.findByEmail(stripEmail);
 
   if (user) {
-    if (user.facebookId)
+    if (user?.facebookId) {
       throw {
         type: "conflict",
-        message: "esse email foi cadastrado com o facebook",
+        message: "Esse email foi cadastrado com o Facebook",
       };
+    }
+
+    if (user?.googleId) {
+      throw {
+        type: "conflict",
+        message: "Esse email foi cadastrado com o Google",
+      };
+    }
     await hashRepository.create(hash, email, expireDate);
     await sendEmail(
       `${process.env.FRONTEND_URL}reset-password/${hash}`,
