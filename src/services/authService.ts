@@ -49,6 +49,20 @@ export async function signIn(body: SignInData) {
 async function checkIfEmailExists(email: string) {
   const user = await userRepository.findByEmail(email);
 
+  if (user?.facebookId) {
+    throw {
+      type: "conflict",
+      message: "Esse email está cadastrado pelo Facebook",
+    };
+  }
+
+  if (user?.googleId) {
+    throw {
+      type: "conflict",
+      message: "Esse email está cadastrado pelo Google",
+    };
+  }
+
   if (user) {
     throw { type: "conflict", message: "Esse email já está em uso" };
   }
