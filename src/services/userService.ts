@@ -56,6 +56,12 @@ export async function updateUserData(
   throw { type: "conflict", message: "Tipo de dado inválido" };
 }
 
+export async function removeUser(email: string) {
+  if (email !== process.env.ADMIN_EMAIL) {
+    await userRepository.removeUser(email);
+  }
+}
+
 function generateToken(data: TokenData) {
   const secretKey = process.env.JWT_SECRET;
 

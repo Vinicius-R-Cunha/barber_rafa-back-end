@@ -80,3 +80,7 @@ export async function changeEmail(email: string, newEmail: string) {
     }
   );
 }
+
+export async function removeUser(email: string) {
+  return await db.collection("users").deleteOne({ email });
+}

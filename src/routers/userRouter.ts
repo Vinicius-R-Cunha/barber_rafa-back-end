@@ -13,4 +13,10 @@ userRouter.put(
   userController.updateUserData
 );
 
+userRouter.delete(
+  "/delete-user",
+  validateTokenMiddleware,
+  userController.removeUser
+);
+
 export default userRouter;

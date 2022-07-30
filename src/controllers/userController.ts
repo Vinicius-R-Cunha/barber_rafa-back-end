@@ -9,3 +9,11 @@ export async function updateUserData(req: Request, res: Response) {
 
   return res.status(200).send(token);
 }
+
+export async function removeUser(req: Request, res: Response) {
+  const { user } = res.locals;
+
+  await userService.removeUser(user.email);
+
+  return res.sendStatus(200);
+}
