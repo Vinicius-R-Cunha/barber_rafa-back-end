@@ -167,7 +167,7 @@ async function sendEmail(email: string, day: string, time: string) {
 
 function getDateAndTime(date: string, description: string) {
   const day = dayjs(date).date().toString().padStart(2, "0");
-  const month = dayjs(date).month().toString().padStart(2, "0");
+  const month = (dayjs(date).month() + 1).toString().padStart(2, "0");
 
   const time = description
     .split(", ")
